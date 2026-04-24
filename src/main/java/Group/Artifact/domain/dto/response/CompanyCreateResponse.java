@@ -37,7 +37,7 @@ public class CompanyCreateResponse {
                                     .createdAt(company.getCreatedAt())
                                     .updatedAt(company.getUpdatedAt())
                                     .createdBy(company.getCreatedBy())
-                                    .updatedBy(company.getUpdatedBy())
+                                    .updatedBy(company.getUpdateBy())
                                     .build();
     }
 }
