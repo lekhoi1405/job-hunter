@@ -35,7 +35,7 @@ public class Company extends AuditBaseEntity{
     private String updatedBy;
 
     
-    private String hehe;
+    private String haha;
 
 
     public static Company fromRequest(CompanyCreateRequest companyCreateRequest){
