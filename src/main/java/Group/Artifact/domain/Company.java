@@ -32,7 +32,7 @@ public class Company extends AuditBaseEntity{
     private String address;
     private String logo;
     private String createdBy;
-    private String updatedBy;
+    private String updateBy;
 
     public static Company fromRequest(CompanyCreateRequest companyCreateRequest){
         return Company.builder()
