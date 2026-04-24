@@ -33,6 +33,11 @@ public class Company extends AuditBaseEntity{
     private String logo;
     private String createdBy;
     private String updatedBy;
+
+    
+    private String haha;
+
+
     public static Company fromRequest(CompanyCreateRequest companyCreateRequest){
         return Company.builder()
                         .name(companyCreateRequest.getName())
