@@ -24,7 +24,7 @@ public class CompanyCreateResponse {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-
+    private String hehe;
     public static CompanyCreateResponse fromEntity(Company company){
         if(company==null)return null;
 
