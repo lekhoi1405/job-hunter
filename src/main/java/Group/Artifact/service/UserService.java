@@ -30,9 +30,9 @@ public class UserService {
     }
 
     public User handleFindUserById(long id)throws Exception{
-        User userOptional = this.userRepository.findById(id)
+        User user = this.userRepository.findById(id)
                                         .orElseThrow(()->new IdInvalidException("user not found"));
-        return userOptional ;
+        return user ;
     }
 
     public User handleUpdateUser(User user)throws Exception{
