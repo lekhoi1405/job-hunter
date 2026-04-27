@@ -1,6 +1,9 @@
 package Group.Artifact.controller;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,5 +28,11 @@ public class CompanyController {
         Company companySaved = this.companyService.handleCreateCompany(companyCreateRequest);
         CompanyCreateResponse companyCreateResponse = CompanyCreateResponse.fromEntity(companySaved);
         return ResponseEntity.ok().body(companyCreateResponse);
+    }
+
+    @GetMapping("/companies")
+    public ResponseEntity<Object> getAllCompany(){
+        List<CompanyCreateResponse> companyCreateResponses = this.companyService.handleGetAllCompanies();
+        return ResponseEntity.ok().body(companyCreateResponses);
     }
 }
