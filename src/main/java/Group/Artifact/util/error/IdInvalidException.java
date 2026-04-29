@@ -1,6 +1,6 @@
 package Group.Artifact.util.error;
 
-public class IdInvalidException extends Exception {
+public class IdInvalidException extends RuntimeException {
     public IdInvalidException(String message){
         super(message);
     }

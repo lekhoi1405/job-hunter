@@ -3,7 +3,7 @@ package Group.Artifact.domain;
 import java.time.Instant;
 
 import Group.Artifact.domain.base.AuditBaseEntity;
-import Group.Artifact.domain.dto.request.CompanyCreateRequest;
+import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,12 +31,4 @@ public class Company extends AuditBaseEntity{
 
     private String address;
     private String logo;
-    public static Company fromRequest(CompanyCreateRequest companyCreateRequest){
-        return Company.builder()
-                        .name(companyCreateRequest.getName())
-                        .description(companyCreateRequest.getDescription())
-                        .address(companyCreateRequest.getAddress())
-                        .logo(companyCreateRequest.getLogo())
-                        .build();         
-    }
 }

@@ -29,20 +29,19 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
-    public User handleFindUserById(long id)throws Exception{
+    public User handleFindUserById(long id){
         User user = this.userRepository.findById(id)
                                         .orElseThrow(()->new IdInvalidException("user not found"));
         return user ;
     }
 
-    public User handleUpdateUser(User user)throws Exception{
+    public User handleUpdateUser(User user){
         User current = this.handleFindUserById(user.getId());
         if(current!=null){
             current.setEmail(user.getEmail());
             current.setName(user.getName());
             current.setPassword(user.getPassword());
             this.handleSaveUser(current);
-            this.userRepository.save(current);
         }
         return current;
     }

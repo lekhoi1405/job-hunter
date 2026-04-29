@@ -1,21 +1,15 @@
-package Group.Artifact.domain.dto.response;
+package Group.Artifact.domain.dto.response.company;
 
 import java.time.Instant;
 
 import Group.Artifact.domain.Company;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Setter
-@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class CompanyCreateResponse {
-    private long id;
+@Getter
+public class CompanyGetResponse {
+    private Long id;
     private String name;
     private String description;
     private String address;
@@ -24,11 +18,10 @@ public class CompanyCreateResponse {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
-    private String hehe;
-    public static CompanyCreateResponse fromEntity(Company company){
+    public static CompanyGetResponse fromEntity(Company company){
         if(company==null)return null;
 
-        return CompanyCreateResponse.builder()
+        return CompanyGetResponse.builder()
                                     .id(company.getId())
                                     .name(company.getName())
                                     .description(company.getDescription())
