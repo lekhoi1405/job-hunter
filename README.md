@@ -1,5 +1,8 @@
 # 🎯 JobHunter - RESTful API System
-
+![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-brightgreen?style=flat-square&logo=spring-boot)
+![MySQL](https://img.shields.io/badge/MySQL-Database-blue?style=flat-square&logo=mysql)
+![Security](https://img.shields.io/badge/Spring_Security-JWT-red?style=flat-square&logo=spring-security)
 ## 📖 Introduction
 
 JobHunter is a robust backend RESTful API designed to manage job recruitment processes. This project focuses on providing secure, scalable, and standardized APIs for managing users and companies. It is built with a strict **3-Layer Architecture**.
