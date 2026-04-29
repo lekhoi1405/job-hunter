@@ -1,0 +1,302 @@
+{
+  "info": {
+    "_postman_id": "4ad1a021-8cc0-40d2-9e1f-0dda7beb87eb",
+    "name": "Spring Restful",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49053525",
+    "_collection_link": "https://go.postman.co/collection/49053525-4ad1a021-8cc0-40d2-9e1f-0dda7beb87eb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "user",
+      "item": [
+        {
+          "name": "create user",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\":\"khoianh2407@gmail.com\",\r\n    \"name\":\"koi\",\r\n    \"password\":\"1234\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete user by id",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/users/21333",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "users",
+                "21333"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/users/21",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "users",
+                "21"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get user",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upadate user",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"koiiiiii\",\r\n    \"email\": \"khoianh2407@gmail.com\",\r\n    \"password\": \"12345\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/users",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8081/",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "module auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"\",\r\n    \"password\": \"\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "module company",
+      "item": [
+        {
+          "name": "create company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraG9pYW5oMjQwN0BnbWFpbC5jb20iLCJleHAiOjE3ODU0MjYxMjYsImlhdCI6MTc3Njc4NjEyNiwiS29pQm9uZyI6eyJwcmluY2lwYWwiOnsicGFzc3dvcmQiOm51bGwsInVzZXJuYW1lIjoia2hvaWFuaDI0MDdAZ21haWwuY29tIiwiYXV0aG9yaXRpZXMiOlt7InJvbGUiOiJST0xFX1VTRVIifV0sImFjY291bnROb25FeHBpcmVkIjp0cnVlLCJhY2NvdW50Tm9uTG9ja2VkIjp0cnVlLCJjcmVkZW50aWFsc05vbkV4cGlyZWQiOnRydWUsImVuYWJsZWQiOnRydWV9LCJjcmVkZW50aWFscyI6bnVsbCwiYXV0aG9yaXRpZXMiOlt7InJvbGUiOiJST0xFX1VTRVIifV0sImRldGFpbHMiOm51bGwsImF1dGhlbnRpY2F0ZWQiOnRydWV9fQ.RmtRxjnkSMwGxnvBwsOXeQOyQsww6wnW7bf8R8pJyIogy1HDwsOVtwBAb0Uj_FjDypTqi4sVJtpsBB2X3PUNaQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"bong iu  \",\r\n    \"description\": \"123\",\r\n    \"address\": \"12345\",\r\n    \"logo\": \"123467.png\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/companies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "companies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get companies",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJraG9pYW5oMjQwN0BnbWFpbC5jb20iLCJleHAiOjE3ODU0MjYxMjYsImlhdCI6MTc3Njc4NjEyNiwiS29pQm9uZyI6eyJwcmluY2lwYWwiOnsicGFzc3dvcmQiOm51bGwsInVzZXJuYW1lIjoia2hvaWFuaDI0MDdAZ21haWwuY29tIiwiYXV0aG9yaXRpZXMiOlt7InJvbGUiOiJST0xFX1VTRVIifV0sImFjY291bnROb25FeHBpcmVkIjp0cnVlLCJhY2NvdW50Tm9uTG9ja2VkIjp0cnVlLCJjcmVkZW50aWFsc05vbkV4cGlyZWQiOnRydWUsImVuYWJsZWQiOnRydWV9LCJjcmVkZW50aWFscyI6bnVsbCwiYXV0aG9yaXRpZXMiOlt7InJvbGUiOiJST0xFX1VTRVIifV0sImRldGFpbHMiOm51bGwsImF1dGhlbnRpY2F0ZWQiOnRydWV9fQ.RmtRxjnkSMwGxnvBwsOXeQOyQsww6wnW7bf8R8pJyIogy1HDwsOVtwBAb0Uj_FjDypTqi4sVJtpsBB2X3PUNaQ",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\":1,\r\n    \"name\":\"bong iu\",\r\n    \"description\":\"my first com\",\r\n    \"address\":\"vin\",\r\n    \"logo\":\"hihi.png\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8081/companies",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8081",
+              "path": [
+                "companies"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
