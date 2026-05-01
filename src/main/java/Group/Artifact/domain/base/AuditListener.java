@@ -22,7 +22,7 @@ public class AuditListener {
     }
 
     @PreUpdate
-    public void onPreUpdated(Object object) throws IdInvalidException{
+    public void onPreUpdated(Object object){
         if(object instanceof AuditBaseEntity auditBaseEntity){
             auditBaseEntity.setUpdatedAt(Instant.now());
             auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUser()

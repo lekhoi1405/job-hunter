@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> findUserById(@PathVariable long id)throws Exception{
+    public ResponseEntity<?> findUserById(@PathVariable long id){
         User userFound =  this.userService.handleFindUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(userFound);
     }
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long id) throws IdInvalidException{
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         if(id > 1500){              
             throw new IdInvalidException("khong lon hon 1500");
         }
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user)throws Exception{
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         User userUpdated = this.userService.handleUpdateUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(userUpdated);
     }
