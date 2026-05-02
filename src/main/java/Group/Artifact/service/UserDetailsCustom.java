@@ -21,7 +21,7 @@ public class UserDetailsCustom implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Group.Artifact.domain.User user = this.userService.handleGetUserByUsername(username);
+        Group.Artifact.domain.entity.User user = this.userService.handleGetUserByUsername(username);
         if(user == null) throw new UsernameNotFoundException("username/password invalid");
         return new User(
             user.getEmail(),

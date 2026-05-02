@@ -11,22 +11,23 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import Group.Artifact.domain.RestResponse;
+import Group.Artifact.domain.dto.response.RestResponse;
 
 @ControllerAdvice
 public class GlobalException {
     @ExceptionHandler(value = {BadCredentialsException.class, IdInvalidException.class} ) 
-    public ResponseEntity<RestResponse<Object>> handleException(Exception exception){
+    public ResponseEntity<RestResponse<Object>> handleException(RuntimeException runtimeException){
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(exception.getMessage());
+        res.setError(runtimeException.getMessage());
         res.setMessage("Exception");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<RestResponse<Object>> validationError(MethodArgumentNotValidException exception){     
+    public ResponseEntity<RestResponse<Object>> handelValidationError(MethodArgumentNotValidException exception){     
         BindingResult bindingResult = exception.getBindingResult();
         final List<FieldError> fieldErrors = bindingResult.getFieldErrors(); 
 
@@ -37,6 +38,15 @@ public class GlobalException {
         List<String> errors = new ArrayList<>();
         fieldErrors.forEach(error -> errors.add("Error: " + error.getField() + "("+ error.getDefaultMessage()+")"));
         res.setMessage(errors.size()>1 ?  errors : errors.get(0));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
+
+    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<RestResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException MethodArgumentTypeMismatchException){
+                RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(MethodArgumentTypeMismatchException.getMessage());
+        res.setMessage("Exception");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
     

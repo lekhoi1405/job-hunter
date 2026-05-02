@@ -2,9 +2,17 @@ package Group.Artifact.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.User;
+import Group.Artifact.domain.entity.User;
+import Group.Artifact.domain.dto.response.Meta;
+import Group.Artifact.domain.dto.response.ResultPagination;
+import Group.Artifact.domain.dto.response.company.CompanyResponse;
+import Group.Artifact.domain.dto.response.user.UserResponse;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.util.error.IdInvalidException;
 
@@ -25,13 +33,31 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    public List<User> handleFindAllUser(){
-        return this.userRepository.findAll();
+    public ResultPagination<List<UserResponse>> handleFindAllUser(Integer current, Integer pageSize, String key){
+        Sort sort = Sort.by("id").descending();
+        Pageable pageable = PageRequest.of(current-1, pageSize, sort);
+
+        Page<User> page = this.userRepository.findByNameContainingIgnoreCase(key,pageable);
+
+        Meta meta = Meta.builder()
+                        .current(page.getNumber()+1)
+                        .pageSize(page.getSize())
+                        .pages(page.getTotalPages())
+                        .total(page.getTotalElements())
+                        .build();
+
+        List<UserResponse> content = page.getContent().stream().map(UserResponse::fromEntity).toList();
+
+        return ResultPagination.<List<UserResponse>>builder()
+                                                    .meta(meta)
+                                                    .Result(content)
+                                                    .build();
+
     }
 
     public User handleFindUserById(long id){
         User user = this.userRepository.findById(id)
-                                        .orElseThrow(()->new IdInvalidException("user not found"));
+                                        .orElseThrow(IdInvalidException::new);
         return user ;
     }
 
