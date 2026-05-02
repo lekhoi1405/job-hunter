@@ -2,27 +2,28 @@ package Group.Artifact.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.Company;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
+import Group.Artifact.domain.dto.response.Meta;
+import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.company.CompanyResponse;
+import Group.Artifact.domain.entity.Company;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
 
 @Service
 public class CompanyService {
-    private final Group.Artifact.ArtifactApplication artifactApplication;
     private final CompanyRepository companyRepository;
     
-    public CompanyService(CompanyRepository companyRepository, Group.Artifact.ArtifactApplication artifactApplication){
+    public CompanyService(CompanyRepository companyRepository){
         this.companyRepository = companyRepository;
-        this.artifactApplication = artifactApplication;
     }
 
     public CompanyResponse handleCreateCompany(CompanyCreateRequest companyCreateRequest){
@@ -31,22 +32,34 @@ public class CompanyService {
         return CompanyResponse.fromEntity(company);
     }
 
-    public List<CompanyResponse> handleGetAllCompanies(Integer currentPage, String pageSize){
+    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Integer current, Integer pageSize){
+        Sort sort = Sort.by("id").ascending();
+        Pageable pageable = PageRequest.of(current-1, pageSize, sort);
 
-        // int current = Integer.parseInt(currentPage);
-        int size = Integer.parseInt(pageSize);
-        Sort sort = Sort.by("name").descending();
-        Pageable pageable = PageRequest.of(currentPage, size, sort);
+        Page<Company> companyPageable = this.companyRepository.findAll(pageable);
 
-        return this.companyRepository.findAll(pageable).stream()
-                                    .map(company -> CompanyResponse.fromEntity(company))
-                                    .toList();
+        Meta meta = Meta.builder()
+                        .current(companyPageable.getNumber()+1)
+                        .pageSize(companyPageable.getSize())
+                        .pages(companyPageable.getTotalPages())
+                        .total(companyPageable.getTotalElements())
+                        .build();
+                                                        
+        List<CompanyResponse> content = companyPageable.getContent().stream()
+                                                        .map(CompanyResponse::fromEntity)
+                                                        .toList();
+
+        return ResultPagination.<List<CompanyResponse>>builder()
+                                                        .meta(meta)
+                                                        .Result(content)
+                                                        .build();  
+                                                                                                     
     }
 
     @Transactional
     public CompanyResponse handleUpdateCompany(CompanyUpdateRequest companyUpdateRequest) {
         Company company = this.companyRepository.findById(companyUpdateRequest.getId())
-                                                .orElseThrow(()->new IdInvalidException("id not found"));
+                                                .orElseThrow(IdInvalidException::new);
 
         CompanyUpdateRequest.update(companyUpdateRequest, company);
         
@@ -55,11 +68,11 @@ public class CompanyService {
 
     public CompanyResponse getCompanyById(Long id){
         return CompanyResponse.fromEntity(this.companyRepository.findById(id)
-                                                .orElseThrow(()->new IdInvalidException("Id not found")));
+                                                .orElseThrow(IdInvalidException::new));
     }
 
     public void deleteCompany(Long id){
         this.companyRepository.delete(this.companyRepository.findById(id)
-                                    .orElseThrow(()-> new IdInvalidException("Id not found")));
+                                    .orElseThrow(IdInvalidException::new));
     }
 }

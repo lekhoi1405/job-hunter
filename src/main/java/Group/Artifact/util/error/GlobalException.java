@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import Group.Artifact.domain.RestResponse;
+import Group.Artifact.domain.dto.response.RestResponse;
 
 @ControllerAdvice
 public class GlobalException {

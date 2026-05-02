@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
+import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.company.CompanyResponse;
 import Group.Artifact.service.CompanyService;
 import jakarta.validation.Valid;
@@ -34,10 +35,10 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<CompanyResponse>> getAllCompanies(
-                @RequestParam Optional<Integer> currentPage, 
-                @RequestParam() Optional<String> pageSize){
-        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(currentPage.orElse(0),pageSize.orElse("2")));
+    public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
+                @RequestParam Optional<Integer> current, 
+                @RequestParam Optional<Integer> pageSize){
+        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2)));
     }
 
     @GetMapping("/Companies/{id}")

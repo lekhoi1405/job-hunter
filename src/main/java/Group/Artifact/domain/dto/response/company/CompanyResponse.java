@@ -2,7 +2,7 @@ package Group.Artifact.domain.dto.response.company;
 
 import java.time.Instant;
 
-import Group.Artifact.domain.Company;
+import Group.Artifact.domain.entity.Company;
 import lombok.Builder;
 import lombok.Getter;
 

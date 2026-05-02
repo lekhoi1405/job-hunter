@@ -1,6 +1,6 @@
 package Group.Artifact.domain.dto.request.company;
 
-import Group.Artifact.domain.Company;
+import Group.Artifact.domain.entity.Company;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;

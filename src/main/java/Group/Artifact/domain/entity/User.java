@@ -1,4 +1,4 @@
-package Group.Artifact.domain;
+package Group.Artifact.domain.entity;
 
 import Group.Artifact.domain.base.BaseEntity;
 import jakarta.persistence.Entity;

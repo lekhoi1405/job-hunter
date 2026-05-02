@@ -1,14 +1,8 @@
-package Group.Artifact.domain;
-
-import java.time.Instant;
+package Group.Artifact.domain.entity;
 
 import Group.Artifact.domain.base.AuditBaseEntity;
-import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
