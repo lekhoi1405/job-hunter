@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import Group.Artifact.domain.CompanySpec;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
@@ -36,7 +38,9 @@ public class CompanyService {
         Sort sort = Sort.by("id").ascending();
         Pageable pageable = PageRequest.of(current-1, pageSize, sort);
 
-        Page<Company> companyPageable = this.companyRepository.findAll(pageable);
+        Specification<Company> specification = CompanySpec.hasName("b");
+
+        Page<Company> companyPageable = this.companyRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
                         .current(companyPageable.getNumber()+1)
