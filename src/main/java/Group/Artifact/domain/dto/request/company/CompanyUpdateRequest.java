@@ -1,5 +1,6 @@
 package Group.Artifact.domain.dto.request.company;
 
+import Group.Artifact.domain.Company;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +14,11 @@ public class CompanyUpdateRequest {
     private String description;
     private String address;
     private String logo;
+
+    public static void update(CompanyUpdateRequest companyUpdateRequest, Company company){
+        if(companyUpdateRequest.getDescription()!=null)company.setDescription(companyUpdateRequest.getDescription());
+        if(companyUpdateRequest.getLogo()!=null)company.setLogo(companyUpdateRequest.getLogo());
+        if(companyUpdateRequest.getName()!=null)company.setName(companyUpdateRequest.getName());
+        if(companyUpdateRequest.getAddress()!=null)company.setAddress(companyUpdateRequest.getAddress());
+    }
 }

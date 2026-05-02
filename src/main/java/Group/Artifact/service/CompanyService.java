@@ -2,14 +2,15 @@ package Group.Artifact.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import Group.Artifact.domain.Company;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
-import Group.Artifact.domain.dto.response.company.CompanyCreateResponse;
-import Group.Artifact.domain.dto.response.company.CompanyGetResponse;
-import Group.Artifact.domain.dto.response.company.CompanyUpdateResponse;
+import Group.Artifact.domain.dto.response.company.CompanyResponse;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
@@ -24,37 +25,41 @@ public class CompanyService {
         this.artifactApplication = artifactApplication;
     }
 
-    public CompanyCreateResponse handleCreateCompany(CompanyCreateRequest companyCreateRequest){
+    public CompanyResponse handleCreateCompany(CompanyCreateRequest companyCreateRequest){
         Company company = CompanyCreateRequest.toEntity(companyCreateRequest);
         this.companyRepository.save(company);
-        return CompanyCreateResponse.fromEntity(company);
+        return CompanyResponse.fromEntity(company);
     }
 
-    public List<CompanyGetResponse> handleGetAllCompanies(){
-        return this.companyRepository.findAll().stream()
-                                    .map(company -> CompanyGetResponse.fromEntity(company))
+    public List<CompanyResponse> handleGetAllCompanies(Integer currentPage, String pageSize){
+
+        // int current = Integer.parseInt(currentPage);
+        int size = Integer.parseInt(pageSize);
+        Sort sort = Sort.by("name").descending();
+        Pageable pageable = PageRequest.of(currentPage, size, sort);
+
+        return this.companyRepository.findAll(pageable).stream()
+                                    .map(company -> CompanyResponse.fromEntity(company))
                                     .toList();
     }
 
     @Transactional
-    public CompanyUpdateResponse handleUpdateCompany(CompanyUpdateRequest companyUpdateRequest) {
+    public CompanyResponse handleUpdateCompany(CompanyUpdateRequest companyUpdateRequest) {
         Company company = this.companyRepository.findById(companyUpdateRequest.getId())
                                                 .orElseThrow(()->new IdInvalidException("id not found"));
 
-        if(companyUpdateRequest.getDescription()!=null)company.setDescription(companyUpdateRequest.getDescription());
-        if(companyUpdateRequest.getLogo()!=null)company.setLogo(companyUpdateRequest.getLogo());
-        if(companyUpdateRequest.getName()!=null)company.setName(companyUpdateRequest.getName());
-        if(companyUpdateRequest.getAddress()!=null)company.setAddress(companyUpdateRequest.getAddress());
+        CompanyUpdateRequest.update(companyUpdateRequest, company);
         
-        return CompanyUpdateResponse.fromEntity(company);
+        return CompanyResponse.fromEntity(company);
     }
 
-    public CompanyGetResponse getCompanyById(Long id){
-        return CompanyGetResponse.fromEntity(this.companyRepository.findById(id)
+    public CompanyResponse getCompanyById(Long id){
+        return CompanyResponse.fromEntity(this.companyRepository.findById(id)
                                                 .orElseThrow(()->new IdInvalidException("Id not found")));
     }
 
-    public void deleteCompanyByid(Long id){
-        this.companyRepository.deleteById(id);
+    public void deleteCompany(Long id){
+        this.companyRepository.delete(this.companyRepository.findById(id)
+                                    .orElseThrow(()-> new IdInvalidException("Id not found")));
     }
 }
