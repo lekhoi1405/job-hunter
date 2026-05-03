@@ -3,6 +3,7 @@ package Group.Artifact.controller;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,27 +35,32 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.handleCreateCompany(companyCreateRequest));
     }
 
+    // @GetMapping("/companies")
+    // public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
+    //             @RequestParam Optional<Integer> current, 
+    //             @RequestParam Optional<Integer> pageSize){
+    //     return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2)));
+    // }
+
     @GetMapping("/companies")
-    public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
-                @RequestParam Optional<Integer> current, 
-                @RequestParam Optional<Integer> pageSize){
-        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2)));
+    public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(Pageable pageableRequest, @RequestParam String filter){
+        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(pageableRequest,filter));
     }
 
     @GetMapping("/Companies/{id}")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id){
-        return ResponseEntity.ok(this.companyService.getCompanyById(id));
+        return ResponseEntity.ok(this.companyService.handleGetCompanyById(id));
     }
 
     @PutMapping("/Companies")
-    public ResponseEntity<CompanyResponse> updateCompany(@Valid @RequestBody CompanyUpdateRequest companyUpdateRequest) {
+    public ResponseEntity<CompanyResponse> updateCompany(@Valid @RequestBody CompanyUpdateRequest companyUpdateRequest){
         return ResponseEntity.ok(this.companyService.handleUpdateCompany(companyUpdateRequest));
     }
 
     @DeleteMapping("/Companies/{id}")
     public ResponseEntity<Object> deleteCompany(@PathVariable Long id){
-        this.companyService.deleteCompany(id);
+        this.companyService.handleDeleteCompanyById(id);
         return ResponseEntity.ok(null);
     }
-    
+
 }

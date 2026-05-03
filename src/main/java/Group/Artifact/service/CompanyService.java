@@ -1,5 +1,6 @@
 package Group.Artifact.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -9,7 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.CompanySpec;
+import Group.Artifact.domain.GenericSpecification;
+import Group.Artifact.domain.SearchCriteria;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
@@ -32,15 +34,19 @@ public class CompanyService {
         Company company = CompanyCreateRequest.toEntity(companyCreateRequest);
         this.companyRepository.save(company);
         return CompanyResponse.fromEntity(company);
-    }
+    } 
 
-    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Integer current, Integer pageSize){
+    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Pageable pageableRequest, String filter){
         Sort sort = Sort.by("id").ascending();
-        Pageable pageable = PageRequest.of(current-1, pageSize, sort);
+        Pageable pageable = PageRequest.of(pageableRequest.getPageNumber(), pageableRequest.getPageSize(), sort);
 
-        Specification<Company> specification = CompanySpec.hasName("b");
+        List<SearchCriteria> criterias = SearchCriteria.convertStringToCriteria(filter);
+        List<GenericSpecification<Company>> genericSpecifications = new ArrayList<>();
 
-        Page<Company> companyPageable = this.companyRepository.findAll(specification, pageable);
+        criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
+        Specification specification = new Specification<T>()
+        
+        Page<Company> companyPageable = this.companyRepository.findAll(pageable);
 
         Meta meta = Meta.builder()
                         .current(companyPageable.getNumber()+1)
@@ -70,12 +76,12 @@ public class CompanyService {
         return CompanyResponse.fromEntity(company);
     }
 
-    public CompanyResponse getCompanyById(Long id){
+    public CompanyResponse handleGetCompanyById(Long id){
         return CompanyResponse.fromEntity(this.companyRepository.findById(id)
                                                 .orElseThrow(IdInvalidException::new));
     }
 
-    public void deleteCompany(Long id){
+    public void handleDeleteCompanyById(Long id){
         this.companyRepository.delete(this.companyRepository.findById(id)
                                     .orElseThrow(IdInvalidException::new));
     }
