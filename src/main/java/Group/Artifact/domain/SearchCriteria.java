@@ -35,7 +35,8 @@ public class SearchCriteria {
         String[] operation ={":",">","<","="};
         for (String element : operation) {
             if(filterString.contains(element)){
-                return filterString.split(element);
+                String[] result = filterString.split(element,2);
+                return new String[]{result[0],element,result[1]};
             }
         }
         return null;

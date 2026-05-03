@@ -36,17 +36,24 @@ public class CompanyService {
         return CompanyResponse.fromEntity(company);
     } 
 
-    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Pageable pageableRequest, String filter){
+    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Integer current,Integer pageSize, String filterRequest){
         Sort sort = Sort.by("id").ascending();
-        Pageable pageable = PageRequest.of(pageableRequest.getPageNumber(), pageableRequest.getPageSize(), sort);
+        Pageable pageable = PageRequest.of(current-1, pageSize, sort);
+    
+        Specification<Company> specification = Specification.where(null);
 
-        List<SearchCriteria> criterias = SearchCriteria.convertStringToCriteria(filter);
-        List<GenericSpecification<Company>> genericSpecifications = new ArrayList<>();
+        String filter = filterRequest.trim();
+        if(!filter.isEmpty()){
+            List<SearchCriteria> criterias = SearchCriteria.convertStringToCriteria(filter);
+            List<GenericSpecification<Company>> genericSpecifications = new ArrayList<>();
+            criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
+            
 
-        criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
-        Specification specification = new Specification<T>()
-        
-        Page<Company> companyPageable = this.companyRepository.findAll(pageable);
+            for(GenericSpecification<Company> genericSpecification : genericSpecifications){
+                specification = specification.and(genericSpecification);
+            }
+        }
+        Page<Company>  companyPageable= this.companyRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
                         .current(companyPageable.getNumber()+1)

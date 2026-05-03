@@ -35,23 +35,19 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.handleCreateCompany(companyCreateRequest));
     }
 
-    // @GetMapping("/companies")
-    // public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
-    //             @RequestParam Optional<Integer> current, 
-    //             @RequestParam Optional<Integer> pageSize){
-    //     return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2)));
-    // }
-
     @GetMapping("/companies")
-    public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(Pageable pageableRequest, @RequestParam String filter){
-        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(pageableRequest,filter));
+    public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
+                @RequestParam Optional<Integer> current, 
+                @RequestParam Optional<Integer> pageSize,
+                @RequestParam Optional<String> filter){
+        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2),filter.orElse("")));
     }
 
     @GetMapping("/Companies/{id}")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id){
         return ResponseEntity.ok(this.companyService.handleGetCompanyById(id));
     }
-
+ 
     @PutMapping("/Companies")
     public ResponseEntity<CompanyResponse> updateCompany(@Valid @RequestBody CompanyUpdateRequest companyUpdateRequest){
         return ResponseEntity.ok(this.companyService.handleUpdateCompany(companyUpdateRequest));
