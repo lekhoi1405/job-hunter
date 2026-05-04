@@ -16,7 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import Group.Artifact.domain.dto.response.RestResponse;
 
 @ControllerAdvice
-public class GlobalException {
+public class GlobalExceptionAdvice {
     @ExceptionHandler(value = {BadCredentialsException.class, IdInvalidException.class} ) 
     public ResponseEntity<RestResponse<Object>> handleException(RuntimeException runtimeException){
         RestResponse<Object> res = new RestResponse<>();

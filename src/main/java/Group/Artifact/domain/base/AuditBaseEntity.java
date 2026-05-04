@@ -21,5 +21,5 @@ public abstract class AuditBaseEntity extends BaseEntity{
     private Instant updatedAt;
 
     private String createdBy;
-    private String updatedBy; 
+    private String updatedBy;
 }
