@@ -10,8 +10,8 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import Group.Artifact.domain.ApiMessage;
 import Group.Artifact.domain.dto.response.RestResponse;
+import Group.Artifact.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Group.Artifact.domain.ApiMessage;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.company.CompanyResponse;
 import Group.Artifact.service.CompanyService;
+import Group.Artifact.util.annotation.ApiMessage;
 import jakarta.validation.Valid;
 
 @RestController
