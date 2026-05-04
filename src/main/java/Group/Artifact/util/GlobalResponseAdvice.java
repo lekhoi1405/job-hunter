@@ -1,5 +1,7 @@
 package Group.Artifact.util;
 
+import java.lang.annotation.Annotation;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -8,16 +10,15 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import Group.Artifact.domain.RestResponse;
+import Group.Artifact.domain.dto.response.RestResponse;
+import Group.Artifact.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
-public class FormatRestResponse implements ResponseBodyAdvice<Object>{
+public class GlobalResponseAdvice implements ResponseBodyAdvice<Object>{
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
-        //khi nao can ghi de
-        //true la luon luon format
         return true;
     }
     
@@ -34,8 +35,9 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object>{
                 if(status >= 400){
                     return body;
                 }else{
+                    ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
                     res.setData(body);
-                    res.setMessage("Call Api Success");
+                    res.setMessage((message.value()==null) ? "Call api success" : message.value());
                 }
                 return res;
     }
