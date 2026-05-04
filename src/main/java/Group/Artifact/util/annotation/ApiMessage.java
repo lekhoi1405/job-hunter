@@ -1,4 +1,4 @@
-package Group.Artifact.domain;
+package Group.Artifact.util.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
