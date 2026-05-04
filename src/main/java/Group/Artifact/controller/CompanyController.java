@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import Group.Artifact.domain.ApiMessage;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.ResultPagination;
@@ -30,11 +31,13 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
+    @ApiMessage("Create company")
     @PostMapping("/companies")
     public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CompanyCreateRequest companyCreateRequest){
         return ResponseEntity.ok(this.companyService.handleCreateCompany(companyCreateRequest));
     }
 
+    @ApiMessage("Fetch all companies")
     @GetMapping("/companies")
     public ResponseEntity<ResultPagination<List<CompanyResponse>>> getAllCompanies(
                 @RequestParam Optional<Integer> current, 
@@ -43,16 +46,19 @@ public class CompanyController {
         return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2),filter.orElse("")));
     }
 
+    @ApiMessage("Get company by id")
     @GetMapping("/Companies/{id}")
     public ResponseEntity<CompanyResponse> getCompanyById(@PathVariable Long id){
         return ResponseEntity.ok(this.companyService.handleGetCompanyById(id));
     }
- 
+    
+    @ApiMessage("Update company")
     @PutMapping("/Companies")
     public ResponseEntity<CompanyResponse> updateCompany(@Valid @RequestBody CompanyUpdateRequest companyUpdateRequest){
         return ResponseEntity.ok(this.companyService.handleUpdateCompany(companyUpdateRequest));
     }
 
+    @ApiMessage("Delete company")
     @DeleteMapping("/Companies/{id}")
     public ResponseEntity<Object> deleteCompany(@PathVariable Long id){
         this.companyService.handleDeleteCompanyById(id);
