@@ -1,4 +1,4 @@
-package Group.Artifact.domain;
+package Group.Artifact.domain.specification;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

@@ -10,14 +10,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.GenericSpecification;
-import Group.Artifact.domain.SearchCriteria;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
 import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.company.CompanyResponse;
 import Group.Artifact.domain.entity.Company;
+import Group.Artifact.domain.specification.GenericSpecification;
+import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;

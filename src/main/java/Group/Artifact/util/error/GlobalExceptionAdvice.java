@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import Group.Artifact.domain.dto.response.RestResponse;
 
@@ -42,12 +43,20 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<RestResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException MethodArgumentTypeMismatchException){
+    public ResponseEntity<RestResponse<Object>> handleTypeMismatch(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException){
                 RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(MethodArgumentTypeMismatchException.getMessage());
-        res.setMessage("Exception");
+        res.setError(methodArgumentTypeMismatchException.getMessage());
+        res.setMessage("Method Argument Type Mismatch Exception");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
     
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public ResponseEntity<RestResponse<Object>> handleTypeMismatch(NoResourceFoundException noResourceFoundException){
+                RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(noResourceFoundException.getMessage());
+        res.setMessage("No Resource Found Exception");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
 }

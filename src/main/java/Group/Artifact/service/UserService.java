@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import Group.Artifact.domain.entity.User;
-import Group.Artifact.domain.GenericSpecification;
-import Group.Artifact.domain.SearchCriteria;
+import Group.Artifact.domain.specification.GenericSpecification;
+import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.domain.dto.request.user.UserCreateRequest;
 import Group.Artifact.domain.dto.request.user.UserUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
@@ -64,7 +64,6 @@ public class UserService {
                 specification = specification.and(genericSpecification);
             }
         }
-
 
         Page<User> page = this.userRepository.findAll(specification, pageable);
 
