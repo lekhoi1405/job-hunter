@@ -7,31 +7,25 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
+@Setter
 @Builder
-public class UserResponse {
+public class UserUpdateResponse {
 
     private Long id;
     private String name;
-    private String email;
     private String address;
     private int age;
     private String gender;
-    private Instant createdAt;
-    private String createdBy;
     private Instant updatedAt;
     private String updatedBy; 
 
-    public static UserResponse fromEntity(User user){
-        return UserResponse.builder()
+    public static UserUpdateResponse fromEntity(User user){
+        return UserUpdateResponse.builder()
                             .id(user.getId())
                             .name(user.getName())
-                            .email(user.getEmail())
                             .address(user.getAddress())
                             .age(user.getAge())
                             .gender(user.getGender().toString())
-                            .createdAt(user.getCreatedAt())
-                            .createdBy(user.getCreatedBy())
                             .updatedAt(user.getUpdatedAt())
                             .updatedBy(user.getUpdatedBy())
                             .build();

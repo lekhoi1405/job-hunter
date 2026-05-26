@@ -12,62 +12,61 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import Group.Artifact.domain.dto.request.user.UserCreateRequest;
+import Group.Artifact.domain.dto.request.user.UserUpdateRequest;
 import Group.Artifact.domain.dto.response.ResultPagination;
+import Group.Artifact.domain.dto.response.user.UserCreateResponse;
 import Group.Artifact.domain.dto.response.user.UserResponse;
-import Group.Artifact.domain.entity.User;
+import Group.Artifact.domain.dto.response.user.UserUpdateResponse;
 import Group.Artifact.service.UserService;
-import Group.Artifact.util.error.IdInvalidException;
+import Group.Artifact.util.annotation.ApiMessage;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
+
     
-    public UserController(UserService userService,PasswordEncoder passwordEncoder){
+    public UserController(UserService userService){
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Object> getHomePage(){
-        return ResponseEntity.status(HttpStatus.OK).body("home page");
-    }
-
-    @GetMapping("/users/{id}")
-    public ResponseEntity<?> findUserById(@PathVariable long id){
+    @ApiMessage("Get user by id")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> findUserById(@PathVariable long id){
         return ResponseEntity.ok(this.userService.handleFindUserById(id));
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<ResultPagination<List<UserResponse>>> getAllUser(
+    @ApiMessage("Fetch all users")
+    @GetMapping
+    public ResponseEntity<ResultPagination<List<UserCreateResponse>>> getAllUser(
             @RequestParam Optional<Integer> current, 
             @RequestParam Optional<Integer> pageSize,
-            @RequestParam Optional<String> key){
-        return ResponseEntity.ok(this.userService.handleFindAllUser(current.orElse(1),pageSize.orElse(2), key.orElse("")));
+            @RequestParam Optional<String> filter){
+        return ResponseEntity.ok(this.userService.handleFindAllUser(current.orElse(1),pageSize.orElse(2), filter.orElse("")));
     }   
 
-    @PostMapping("/users")
-    public ResponseEntity<User> createUser(@RequestBody User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return ResponseEntity.ok(this.userService.handleSaveUser(user));
+    @ApiMessage("Create User")
+    @PostMapping
+    public ResponseEntity<UserCreateResponse> createUser(@RequestBody UserCreateRequest userCreateRequest){
+        return ResponseEntity.ok(this.userService.handleCreateUser(userCreateRequest));
     }
 
-    @DeleteMapping("/users/{id}")
+    @ApiMessage("Delete user")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
-        if(id > 1500){              
-            throw new IdInvalidException("khong lon hon 1500");
-        }
-
         this.userService.handleDeleteUser(id);  
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<User> updateUser(@RequestBody User user) {
-        return ResponseEntity.ok(this.userService.handleUpdateUser(user));
+    @ApiMessage("Update user")
+    @PutMapping()
+    public ResponseEntity<UserUpdateResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
+        return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdateRequest));
     }
 }

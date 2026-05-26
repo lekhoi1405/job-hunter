@@ -53,7 +53,7 @@ public class CompanyService {
                 specification = specification.and(genericSpecification);
             }
         }
-        Page<Company>  companyPageable= this.companyRepository.findAll(specification, pageable);
+        Page<Company>  companyPageable = this.companyRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
                         .current(companyPageable.getNumber()+1)
