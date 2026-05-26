@@ -1,4 +1,4 @@
-package Group.Artifact.domain;
+package Group.Artifact.domain.specification;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.jpa.domain.Specification;
