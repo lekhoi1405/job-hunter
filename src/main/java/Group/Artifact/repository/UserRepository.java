@@ -1,5 +1,7 @@
 package Group.Artifact.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,7 +13,7 @@ import Group.Artifact.domain.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificationExecutor<User>{
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     Page<User> findAll(Specification<User> specification, Pageable pageable);
 }
