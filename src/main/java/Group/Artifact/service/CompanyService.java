@@ -12,11 +12,8 @@ import org.springframework.stereotype.Service;
 
 import Group.Artifact.domain.dto.CompanyDTO;
 import Group.Artifact.domain.dto.mapper.CompanyMapper;
-import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
-import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
 import Group.Artifact.domain.dto.response.ResultPagination;
-import Group.Artifact.domain.dto.response.company.CompanyResponse;
 import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
@@ -34,13 +31,13 @@ public class CompanyService {
         this.companyMapper = companyMapper;
     }
 
-    public CompanyResponse handleCreateCompany(CompanyDTO.CompanyCreateRequest companyCreateRequest){
+    public CompanyDTO.Response handleCreateCompany(CompanyDTO.CreateRequest companyCreateRequest){
         Company company = this.companyMapper.toEntity(companyCreateRequest);
         this.companyRepository.save(company);
-        return CompanyResponse.fromEntity(company);
+        return this.companyMapper.toResponse(company);
     } 
 
-    public ResultPagination<List<CompanyResponse>> handleGetAllCompanies(Integer current,Integer pageSize, String filterRequest){
+    public ResultPagination<List<CompanyDTO.Response>> handleGetAllCompanies(Integer current,Integer pageSize, String filterRequest){
         Sort sort = Sort.by("id").ascending();
         Pageable pageable = PageRequest.of(current-1, pageSize, sort);
     
@@ -52,7 +49,6 @@ public class CompanyService {
             List<GenericSpecification<Company>> genericSpecifications = new ArrayList<>();
             criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
             
-
             for(GenericSpecification<Company> genericSpecification : genericSpecifications){
                 specification = specification.and(genericSpecification);
             }
@@ -66,11 +62,11 @@ public class CompanyService {
                         .total(companyPageable.getTotalElements())
                         .build();
                                                         
-        List<CompanyResponse> content = companyPageable.getContent().stream()
-                                                        .map(CompanyResponse::fromEntity)
+        List<CompanyDTO.Response> content = companyPageable.getContent().stream()
+                                                        .map(company -> this.companyMapper.toResponse(company))
                                                         .toList();
 
-        return ResultPagination.<List<CompanyResponse>>builder()
+        return ResultPagination.<List<CompanyDTO.Response>>builder()
                                                         .meta(meta)
                                                         .Result(content)
                                                         .build();  
@@ -78,17 +74,17 @@ public class CompanyService {
     }
 
     @Transactional
-    public CompanyResponse handleUpdateCompany(CompanyUpdateRequest companyUpdateRequest) {
-        Company company = this.companyRepository.findById(companyUpdateRequest.getId())
+    public CompanyDTO.Response handleUpdateCompany(CompanyDTO.UpdateRequest companyUpdateRequest) {
+        Company company = this.companyRepository.findById(companyUpdateRequest.id())
                                                 .orElseThrow(IdInvalidException::new);
 
-        CompanyUpdateRequest.update(companyUpdateRequest, company);
+        this.companyMapper.update(companyUpdateRequest, company);
         
-        return CompanyResponse.fromEntity(company);
+        return this.companyMapper.toResponse(company);
     }
 
-    public CompanyResponse handleGetCompanyById(Long id){
-        return CompanyResponse.fromEntity(this.companyRepository.findById(id)
+    public CompanyDTO.Response handleGetCompanyById(Long id){
+        return this.companyMapper.toResponse(this.companyRepository.findById(id)
                                                 .orElseThrow(IdInvalidException::new));
     }
 
