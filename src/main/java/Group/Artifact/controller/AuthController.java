@@ -39,8 +39,9 @@ public class AuthController {
         Authentication authentication 
             = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        String accessToken = this.securityUtil.createToken(authentication);
+        String accessToken = this.securityUtil.createAccessToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        
         User user = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         
         LoginDTOResponse loginDTOResponse = LoginDTOResponse.builder()

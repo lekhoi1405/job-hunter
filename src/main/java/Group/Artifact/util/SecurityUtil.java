@@ -16,6 +16,8 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import Group.Artifact.domain.dto.login.LoginDTOResponse;
+
 
 @Service
 public class SecurityUtil {
@@ -27,22 +29,40 @@ public class SecurityUtil {
     @Value("${koiBong.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${koiBong.jwt.token-validity-in-seconds}")
-    private long jwtKeyExpiration;
+    @Value("${koiBong.jwt.access-token-validity-in-seconds}")
+    private long accessTokenExpiration;
+
+    @Value("${koiBong.jwt.refresh-token-validity-in-seconds}")
+    private long refreshTokenExpiration;
 
     public SecurityUtil(JwtEncoder jwtEncoder){
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtKeyExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
             .subject(authentication.getName())
             .claim("KoiBong", authentication)
+            .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,claims)).getTokenValue();
+    }
+
+    public String createRefreshToken(String email, LoginDTOResponse loginDTOResponse) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+            .issuedAt(now)
+            .expiresAt(validity)
+            .subject(email)
+            .claim("user", loginDTOResponse.getUserLoginResponse())
             .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();

@@ -32,7 +32,7 @@ public class SecurityConfiguration {
     @Value("${koiBong.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${koiBong.jwt.token-validity-in-seconds}")
+    @Value("${koiBong.jwt.access-token-validity-in-seconds}")
     private String jwtKeyExpiration;
 
     @Bean
