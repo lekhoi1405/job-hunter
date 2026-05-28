@@ -16,12 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Group.Artifact.domain.dto.request.user.UserCreateRequest;
-import Group.Artifact.domain.dto.request.user.UserUpdateRequest;
+import Group.Artifact.domain.dto.UserDTO;
 import Group.Artifact.domain.dto.response.ResultPagination;
-import Group.Artifact.domain.dto.response.user.UserCreateResponse;
-import Group.Artifact.domain.dto.response.user.UserResponse;
-import Group.Artifact.domain.dto.response.user.UserUpdateResponse;
 import Group.Artifact.service.UserService;
 import Group.Artifact.util.annotation.ApiMessage;
 
@@ -35,26 +31,26 @@ public class UserController {
     public UserController(UserService userService){
         this.userService = userService;
     }
+   
+    @ApiMessage("Create User")
+    @PostMapping
+    public ResponseEntity<UserDTO.CreateResponse> createUser(@RequestBody UserDTO.CreateRequest userCreateRequest){
+        return ResponseEntity.ok(this.userService.handleCreateUser(userCreateRequest));
+    }
 
     @ApiMessage("Get user by id")
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findUserById(@PathVariable long id){
+    public ResponseEntity<UserDTO.Response> findUserById(@PathVariable long id){
         return ResponseEntity.ok(this.userService.handleFindUserById(id));
     }
 
     @ApiMessage("Fetch all users")
     @GetMapping
-    public ResponseEntity<ResultPagination<List<UserCreateResponse>>> getAllUser(
+    public ResponseEntity<ResultPagination<List<UserDTO.Response>>> getAllUser(
             @RequestParam Optional<Integer> current, 
             @RequestParam Optional<Integer> pageSize,
             @RequestParam Optional<String> filter){
         return ResponseEntity.ok(this.userService.handleFindAllUser(current.orElse(1),pageSize.orElse(2), filter.orElse("")));
-    }   
-
-    @ApiMessage("Create User")
-    @PostMapping
-    public ResponseEntity<UserCreateResponse> createUser(@RequestBody UserCreateRequest userCreateRequest){
-        return ResponseEntity.ok(this.userService.handleCreateUser(userCreateRequest));
     }
 
     @ApiMessage("Delete user")
@@ -66,7 +62,7 @@ public class UserController {
 
     @ApiMessage("Update user")
     @PutMapping()
-    public ResponseEntity<UserUpdateResponse> updateUser(@RequestBody UserUpdateRequest userUpdateRequest) {
+    public ResponseEntity<UserDTO.UpdateResponse> updateUser(@RequestBody UserDTO.UpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdateRequest));
     }
 }
