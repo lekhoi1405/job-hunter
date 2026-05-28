@@ -31,5 +31,6 @@ public class User extends AuditBaseEntity{
     private GenderEnum gender;
 
     private String address;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
 }

@@ -99,4 +99,10 @@ public class UserService {
     public User handleGetUserByUsername(String username){
         return this.userRepository.findByEmail(username).orElseThrow(()-> new BadCredentialsException("username not found"));
     }
+
+    @Transactional
+    public void updateUserToken(String token, String email){
+        User user = this.handleGetUserByUsername(email);
+        if(user != null)user.setRefreshToken(token);
+    }
 }

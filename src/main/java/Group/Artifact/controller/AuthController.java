@@ -1,5 +1,8 @@
 package Group.Artifact.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,6 +23,9 @@ import jakarta.validation.Valid;
 @RestController
 public class AuthController {
 
+    @Value("${koiBong.jwt.refresh-token-validity-in-seconds}")
+    private long refreshTokenExpiration;
+    
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final SecurityUtil securityUtil;
     private final UserService userService;
@@ -41,7 +47,7 @@ public class AuthController {
 
         String accessToken = this.securityUtil.createAccessToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+
         User user = this.userService.handleGetUserByUsername(loginDTO.getUsername());
         
         LoginDTOResponse loginDTOResponse = LoginDTOResponse.builder()
@@ -52,6 +58,19 @@ public class AuthController {
                                                                                             .name(user.getName())
                                                                                             .build())
                                                         .build();
-        return ResponseEntity.ok().body(loginDTOResponse);
-    }   
+
+        String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), loginDTOResponse);
+        
+        this.userService.updateUserToken(refreshToken, loginDTO.getUsername());
+
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
+                                                        .httpOnly(true)
+                                                        .secure(true)
+                                                        .path("/")
+                                                        .maxAge(refreshTokenExpiration)
+                                                        .build();
+
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,   .toString()).body(loginDTOResponse);
+    }                                                    
 }   
