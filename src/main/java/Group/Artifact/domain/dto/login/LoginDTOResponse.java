@@ -1,6 +1,5 @@
-package Group.Artifact.domain.dto.response;
+package Group.Artifact.domain.dto.login;
 
-import Group.Artifact.domain.dto.response.user.UserLoginResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

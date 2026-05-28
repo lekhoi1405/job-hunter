@@ -1,4 +1,4 @@
-package Group.Artifact.domain.dto.response.user;
+package Group.Artifact.domain.dto.login;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import Group.Artifact.domain.dto.request.LoginDTO;
-import Group.Artifact.domain.dto.response.LoginDTOResponse;
-import Group.Artifact.domain.dto.response.user.UserLoginResponse;
+import Group.Artifact.domain.dto.login.LoginDTOResponse;
+import Group.Artifact.domain.dto.login.UserLoginResponse;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.service.UserService;
 import Group.Artifact.util.SecurityUtil;

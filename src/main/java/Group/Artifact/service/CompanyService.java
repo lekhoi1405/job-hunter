@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import Group.Artifact.domain.dto.CompanyDTO;
+import Group.Artifact.domain.dto.mapper.CompanyMapper;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.Meta;
@@ -25,13 +27,15 @@ import jakarta.transaction.Transactional;
 @Service
 public class CompanyService {
     private final CompanyRepository companyRepository;
-    
-    public CompanyService(CompanyRepository companyRepository){
+    private final CompanyMapper companyMapper;
+
+    public CompanyService(CompanyRepository companyRepository,CompanyMapper companyMapper){
         this.companyRepository = companyRepository;
+        this.companyMapper = companyMapper;
     }
 
-    public CompanyResponse handleCreateCompany(CompanyCreateRequest companyCreateRequest){
-        Company company = CompanyCreateRequest.toEntity(companyCreateRequest);
+    public CompanyResponse handleCreateCompany(CompanyDTO.CompanyCreateRequest companyCreateRequest){
+        Company company = this.companyMapper.toEntity(companyCreateRequest);
         this.companyRepository.save(company);
         return CompanyResponse.fromEntity(company);
     } 

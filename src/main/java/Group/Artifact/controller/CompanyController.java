@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import Group.Artifact.domain.dto.CompanyDTO;
 import Group.Artifact.domain.dto.request.company.CompanyCreateRequest;
 import Group.Artifact.domain.dto.request.company.CompanyUpdateRequest;
 import Group.Artifact.domain.dto.response.ResultPagination;
@@ -35,7 +36,7 @@ public class CompanyController {
 
     @ApiMessage("Create company")
     @PostMapping
-    public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CompanyCreateRequest companyCreateRequest){
+    public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CompanyDTO.CompanyCreateRequest companyCreateRequest){
         return ResponseEntity.ok(this.companyService.handleCreateCompany(companyCreateRequest));
     }
 
