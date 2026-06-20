@@ -20,17 +20,15 @@ import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.service.CompanyService;
 import Group.Artifact.util.annotation.ApiMessage;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
 
     private final CompanyService companyService;
-
-    public CompanyController(CompanyService companyService){
-        this.companyService = companyService;
-    }
-
+    
     @ApiMessage("Create company")
     @PostMapping
     public ResponseEntity<CompanyDTO.Response> createCompany(@Valid @RequestBody CompanyDTO.CreateRequest companyCreateRequest){

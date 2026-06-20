@@ -1,5 +1,7 @@
 package Group.Artifact.domain.dto.login;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,4 +13,5 @@ public class UserLoginResponse {
     private long id;
     private String email;
     private String name;
+    private List<String> authorities;
 }

@@ -36,8 +36,6 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object>{
                 if(status >= 400){
                     return body;
                 }else{
-                    // ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
-                    // res.setMessage((message.value()==null) ? "Call api success" : message.value());
                     String message = Optional.ofNullable(returnType.getMethodAnnotation(ApiMessage.class))
                                                                     .map(ApiMessage::value)
                                                                     .orElse("call api success");

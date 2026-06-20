@@ -1,7 +1,5 @@
 package Group.Artifact.repository;
 
-import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -13,4 +11,6 @@ import Group.Artifact.domain.entity.Company;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Long>, JpaSpecificationExecutor<Company>{
     Page<Company> findAll(Specification<Company> specification, Pageable pageable);
+    void deleteById(int id);
 }
+ 

@@ -63,7 +63,7 @@ public class CompanyService {
                         .build();
                                                         
         List<CompanyDTO.Response> content = companyPageable.getContent().stream()
-                                                        .map(company -> this.companyMapper.toResponse(company))
+                                                        .map(this.companyMapper::toResponse)
                                                         .toList();
 
         return ResultPagination.<List<CompanyDTO.Response>>builder()

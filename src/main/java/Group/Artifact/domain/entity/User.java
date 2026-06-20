@@ -1,12 +1,18 @@
 package Group.Artifact.domain.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import Group.Artifact.domain.base.AuditBaseEntity;
-import Group.Artifact.domain.base.BaseEntity;
 import Group.Artifact.util.constant.GenderEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +37,16 @@ public class User extends AuditBaseEntity{
     private GenderEnum gender;
 
     private String address;
-    @Column(columnDefinition = "MEDIUMTEXT")
-    private String refreshToken;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshToken = new ArrayList<>();
+
+    public void addToken(RefreshToken refreshToken){
+        this.refreshToken.add(refreshToken);
+        if(refreshToken != null){
+            refreshToken.setUser(this);
+        }
+    }
+
 }

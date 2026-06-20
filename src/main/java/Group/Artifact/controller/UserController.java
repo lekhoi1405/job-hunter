@@ -20,17 +20,14 @@ import Group.Artifact.domain.dto.UserDTO;
 import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.service.UserService;
 import Group.Artifact.util.annotation.ApiMessage;
+import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-
-    
-    public UserController(UserService userService){
-        this.userService = userService;
-    }
    
     @ApiMessage("Create User")
     @PostMapping
@@ -61,7 +58,7 @@ public class UserController {
     }
 
     @ApiMessage("Update user")
-    @PutMapping()
+    @PutMapping
     public ResponseEntity<UserDTO.UpdateResponse> updateUser(@RequestBody UserDTO.UpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdateRequest));
     }
