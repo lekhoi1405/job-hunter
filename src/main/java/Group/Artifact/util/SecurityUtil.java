@@ -23,9 +23,11 @@ import org.springframework.stereotype.Service;
 import Group.Artifact.domain.dto.login.UserLoginResponse;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.service.RefreshTokenService;
+import lombok.RequiredArgsConstructor;
 
 
 @Service
+@RequiredArgsConstructor
 public class SecurityUtil {
 
     public final JwtEncoder jwtEncoder;
@@ -43,10 +45,6 @@ public class SecurityUtil {
     @Value("${koiBong.jwt.refresh-token-validity-in-seconds}")
     private long refreshTokenExpiration;
 
-    public SecurityUtil(JwtEncoder jwtEncoder, RefreshTokenService refreshTokenService){
-        this.jwtEncoder = jwtEncoder; 
-        this.refreshTokenService = refreshTokenService;
-    }
 
     public String createAccessToken(Authentication authentication, UserLoginResponse userLoginResponse) {
         Instant now = Instant.now();

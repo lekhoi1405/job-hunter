@@ -15,7 +15,6 @@ import Group.Artifact.domain.dto.login.UserLoginResponse;
 import Group.Artifact.domain.dto.request.LoginDTO;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
-import Group.Artifact.repository.RefreshTokenRepository;
 import Group.Artifact.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 
