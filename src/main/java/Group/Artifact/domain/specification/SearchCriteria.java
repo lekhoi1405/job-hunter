@@ -1,4 +1,4 @@
-package Group.Artifact.domain;
+package Group.Artifact.domain.specification;
 
 import java.util.ArrayList;
 import java.util.Arrays;

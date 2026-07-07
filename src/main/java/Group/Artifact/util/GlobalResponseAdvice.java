@@ -1,6 +1,6 @@
 package Group.Artifact.util;
 
-import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -35,9 +35,11 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object>{
                 if(status >= 400){
                     return body;
                 }else{
-                    ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+                    String message = Optional.ofNullable(returnType.getMethodAnnotation(ApiMessage.class))
+                                                                    .map(ApiMessage::value)
+                                                                    .orElse("call api success");
+                    res.setMessage(message);
                     res.setData(body);
-                    res.setMessage((message.value()==null) ? "Call api success" : message.value());
                 }
                 return res;
     }

@@ -1,43 +1,71 @@
 package Group.Artifact.service;
 
+import java.security.Security;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
+import Group.Artifact.domain.specification.GenericSpecification;
+import Group.Artifact.domain.specification.SearchCriteria;
+import Group.Artifact.domain.dto.UserDTO;
+import Group.Artifact.domain.dto.mapper.UserMapper;
 import Group.Artifact.domain.dto.response.Meta;
 import Group.Artifact.domain.dto.response.ResultPagination;
-import Group.Artifact.domain.dto.response.company.CompanyResponse;
-import Group.Artifact.domain.dto.response.user.UserResponse;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.util.error.IdInvalidException;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
+
+    public UserDTO.CreateResponse handleCreateUser(UserDTO.CreateRequest createRequest){
+        if(this.userRepository.existsByEmail(createRequest.email()))throw new IdInvalidException("email existed");
+        User user = userMapper.toEntity(createRequest);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return this.userMapper.toCreateResponse(this.userRepository.save(user));  
     }
 
-    public User handleSaveUser(User user){
-        return this.userRepository.save(user);
+    public UserDTO.Response handleFindUserById(long id){
+        User user = this.userRepository.findById(id)
+                                        .orElseThrow(IdInvalidException::new);
+        return this.userMapper.toResponse(user);
     }
 
-    public void handleDeleteUser(long id){
-        this.userRepository.deleteById(id);
-    }
-
-    public ResultPagination<List<UserResponse>> handleFindAllUser(Integer current, Integer pageSize, String key){
+    public ResultPagination<List<UserDTO.Response>> handleFindAllUser(Integer current, Integer pageSize, String filter){
         Sort sort = Sort.by("id").descending();
         Pageable pageable = PageRequest.of(current-1, pageSize, sort);
 
-        Page<User> page = this.userRepository.findByNameContainingIgnoreCase(key,pageable);
+        Specification<User> specification = Specification.where(null);
+
+
+        if(!filter.trim().isEmpty()){
+            List<SearchCriteria> criterias = SearchCriteria.convertStringToCriteria(filter);
+            List<GenericSpecification<User>> genericSpecifications = new ArrayList<>();
+            criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
+
+             for (GenericSpecification<User> genericSpecification : genericSpecifications) {
+                specification = specification.and(genericSpecification);
+            }
+        }
+
+        Page<User> page = this.userRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
                         .current(page.getNumber()+1)
@@ -46,33 +74,38 @@ public class UserService {
                         .total(page.getTotalElements())
                         .build();
 
-        List<UserResponse> content = page.getContent().stream().map(UserResponse::fromEntity).toList();
+        List<UserDTO.Response> content = page.getContent().stream().map(user -> this.userMapper.toResponse(user)).toList();
 
-        return ResultPagination.<List<UserResponse>>builder()
-                                                    .meta(meta)
-                                                    .Result(content)
-                                                    .build();
-
+        return ResultPagination.<List<UserDTO.Response>> builder()
+                                                            .meta(meta)
+                                                            .Result(content)
+                                                            .build();
     }
 
-    public User handleFindUserById(long id){
-        User user = this.userRepository.findById(id)
-                                        .orElseThrow(IdInvalidException::new);
-        return user ;
+    public void handleDeleteUser(long id){
+        if(id > 1500)throw new IdInvalidException("khong lon hon 1500");
+        this.userRepository.deleteById(id);
     }
 
-    public User handleUpdateUser(User user){
-        User current = this.handleFindUserById(user.getId());
-        if(current!=null){
-            current.setEmail(user.getEmail());
-            current.setName(user.getName());
-            current.setPassword(user.getPassword());
-            this.handleSaveUser(current);
-        }
-        return current;
+    @Transactional
+    public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
+        User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
+        this.userMapper.update(userUpdateRequest, current);
+        return this.userMapper.toUpdateResponse(current);
     }
 
     public User handleGetUserByUsername(String username){
-        return this.userRepository.findByEmail(username);
+        return this.userRepository.findByEmail(username).orElseThrow(()-> new BadCredentialsException("username not found"));
     }
+
+    @Transactional
+    public void updateUserRefreshToken(Long id , RefreshToken refreshToken){
+        User user = this.userRepository.findById(id).orElseThrow(IdInvalidException::new);
+        user.addToken(refreshToken);
+    }
+
+    public User handleGetUserProxyById(Long id){
+        return this.userRepository.getReferenceById(id);
+    } 
+
 }

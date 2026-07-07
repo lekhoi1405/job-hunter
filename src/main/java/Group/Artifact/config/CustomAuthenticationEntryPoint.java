@@ -40,13 +40,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                     .map(Throwable::getMessage)
                     .orElse(authException.getMessage());
         restResponse.setError(errorMessage);
-        // String errorMessage;
-
-        // if (authException.getCause() != null) {
-        //     errorMessage = authException.getCause().getMessage();
-        // } else {
-        //     errorMessage = authException.getMessage();
-        // }
         this.objectMapper.writeValue(response.getWriter(), restResponse);
     }
     

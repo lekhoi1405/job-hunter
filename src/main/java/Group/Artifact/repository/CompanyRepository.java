@@ -11,4 +11,6 @@ import Group.Artifact.domain.entity.Company;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company,Long>, JpaSpecificationExecutor<Company>{
     Page<Company> findAll(Specification<Company> specification, Pageable pageable);
+    void deleteById(int id);
 }
+ 

@@ -3,7 +3,6 @@ package Group.Artifact.domain.base;
 import java.time.Instant;
 
 import Group.Artifact.util.SecurityUtil;
-import Group.Artifact.util.error.IdInvalidException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 
