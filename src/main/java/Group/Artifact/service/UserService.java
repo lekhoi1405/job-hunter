@@ -1,8 +1,8 @@
 package Group.Artifact.service;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
@@ -23,19 +24,16 @@ import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper){
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-    }
 
     public UserDTO.CreateResponse handleCreateUser(UserDTO.CreateRequest createRequest){
         if(this.userRepository.existsByEmail(createRequest.email()))throw new IdInvalidException("email existed");
@@ -59,10 +57,10 @@ public class UserService {
 
         if(!filter.trim().isEmpty()){
             List<SearchCriteria> criterias = SearchCriteria.convertStringToCriteria(filter);
-            List<GenericSpecification<SearchCriteria>> genericSpecifications = new ArrayList<>();
+            List<GenericSpecification<User>> genericSpecifications = new ArrayList<>();
             criterias.forEach(criteria -> genericSpecifications.add(new GenericSpecification<>(criteria)));
 
-             for (GenericSpecification genericSpecification : genericSpecifications) {
+             for (GenericSpecification<User> genericSpecification : genericSpecifications) {
                 specification = specification.and(genericSpecification);
             }
         }
@@ -99,4 +97,15 @@ public class UserService {
     public User handleGetUserByUsername(String username){
         return this.userRepository.findByEmail(username).orElseThrow(()-> new BadCredentialsException("username not found"));
     }
+
+    @Transactional
+    public void updateUserRefreshToken(Long id , RefreshToken refreshToken){
+        User user = this.userRepository.findById(id).orElseThrow(IdInvalidException::new);
+        user.addToken(refreshToken);
+    }
+
+    public User handleGetUserProxyById(Long id){
+        return this.userRepository.getReferenceById(id);
+    } 
+
 }

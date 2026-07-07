@@ -1,10 +1,7 @@
 package Group.Artifact.domain.specification;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import Group.Artifact.domain.entity.Company;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;

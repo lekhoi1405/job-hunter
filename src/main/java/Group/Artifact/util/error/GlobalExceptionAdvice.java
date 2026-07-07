@@ -18,6 +18,16 @@ import Group.Artifact.domain.dto.response.RestResponse;
 
 @ControllerAdvice
 public class GlobalExceptionAdvice {
+
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<RestResponse<Object>> handleAllException(Exception exception){
+                RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(exception.getMessage());
+        res.setMessage("Sever has error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(res);
+    }
+
     @ExceptionHandler(value = {BadCredentialsException.class, IdInvalidException.class} ) 
     public ResponseEntity<RestResponse<Object>> handleException(RuntimeException runtimeException){
         RestResponse<Object> res = new RestResponse<>();
