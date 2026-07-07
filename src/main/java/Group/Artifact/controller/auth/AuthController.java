@@ -41,7 +41,8 @@ public class AuthController {
 
     @ApiMessage("Get refresh token")
     @GetMapping("/refresh")
-    public ResponseEntity<String> getRefreshToken(@CookieValue(name = "refresh_token") String refreshToken){
-        return ResponseEntity.ok().body(this.authService.handleGetRefreshToken(refreshToken));
+    public ResponseEntity<LoginDTOResponse> refreshSession(@CookieValue(name = "refresh_token") String refreshToken){
+        LoginResult loginResult = this.authService.handleRefreshSession(refreshToken);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResult.getResponseCookie().toString()).body(loginResult.getLoginDTOResponse());
     }
 }   

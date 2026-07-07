@@ -3,7 +3,6 @@ package Group.Artifact.service;
 import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,9 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.domain.specification.GenericSpecification;
@@ -33,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final Group.Artifact.repository.CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -103,8 +99,13 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserRefreshToken(User user , RefreshToken refreshToken){
+    public void updateUserRefreshToken(Long id , RefreshToken refreshToken){
+        User user = this.userRepository.findById(id).orElseThrow(IdInvalidException::new);
         user.addToken(refreshToken);
     }
+
+    public User handleGetUserProxyById(Long id){
+        return this.userRepository.getReferenceById(id);
+    } 
 
 }

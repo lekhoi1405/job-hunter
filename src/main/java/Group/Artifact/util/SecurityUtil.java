@@ -34,7 +34,7 @@ public class SecurityUtil {
     
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
-    private RefreshTokenService refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${koiBong.jwt.base64-secret}")
     private String jwtKey;
@@ -46,7 +46,7 @@ public class SecurityUtil {
     private long refreshTokenExpiration;
 
 
-    public String createAccessToken(Authentication authentication, UserLoginResponse userLoginResponse) {
+    public String createAccessToken(UserLoginResponse userLoginResponse) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
@@ -55,7 +55,7 @@ public class SecurityUtil {
         JwtClaimsSet claims = JwtClaimsSet.builder()
             .issuedAt(now)
             .expiresAt(validity)
-            .subject(authentication.getName())
+            .subject(userLoginResponse.getEmail())
             .claim("user", userLoginResponse)
             .build();
 

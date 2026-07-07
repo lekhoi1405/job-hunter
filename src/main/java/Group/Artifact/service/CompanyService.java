@@ -20,16 +20,13 @@ import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
-
-    public CompanyService(CompanyRepository companyRepository,CompanyMapper companyMapper){
-        this.companyRepository = companyRepository;
-        this.companyMapper = companyMapper;
-    }
 
     public CompanyDTO.Response handleCreateCompany(CompanyDTO.CreateRequest companyCreateRequest){
         Company company = this.companyMapper.toEntity(companyCreateRequest);

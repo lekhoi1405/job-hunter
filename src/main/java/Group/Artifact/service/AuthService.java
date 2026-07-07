@@ -11,11 +11,13 @@ import org.springframework.security.core.Authentication;
 
 import Group.Artifact.domain.dto.login.LoginDTOResponse;
 import Group.Artifact.domain.dto.login.LoginResult;
+import Group.Artifact.domain.dto.login.UserDetailsCustom;
 import Group.Artifact.domain.dto.login.UserLoginResponse;
 import Group.Artifact.domain.dto.request.LoginDTO;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.util.SecurityUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,7 +32,6 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-
     public LoginResult handleVerifyUserLogin(LoginDTO loginDTO){
         UsernamePasswordAuthenticationToken authenticationToken
             = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
@@ -38,10 +39,11 @@ public class AuthService {
         Authentication authentication 
             = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        User user = this.userService.handleGetUserByUsername(loginDTO.getUsername());
+        UserDetailsCustom userDetailsCustom = (UserDetailsCustom)authentication.getPrincipal();
+        User user = userDetailsCustom.getUser();
 
-        LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(user, authentication);
-        ResponseCookie responseCookie = this.createCookie(loginDTO, user);
+        LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(user);
+        ResponseCookie responseCookie = this.handleCreateRefreshToken(user);
 
         return LoginResult.builder()
                             .loginDTOResponse(loginDTOResponse)
@@ -49,14 +51,14 @@ public class AuthService {
                             .build();
     }
 
-    public LoginDTOResponse handleCreateAccessToken(User user, Authentication authentication){
+    public LoginDTOResponse handleCreateAccessToken(User user){
         UserLoginResponse userLoginResponse = UserLoginResponse.builder()
                                                                .id(user.getId())
                                                                .email(user.getEmail())
                                                                .name(user.getName())
                                                                .build();
 
-        String accessToken = this.securityUtil.createAccessToken(authentication, userLoginResponse);                                                       
+        String accessToken = this.securityUtil.createAccessToken(userLoginResponse);                                                       
 
         LoginDTOResponse loginDTOResponse = LoginDTOResponse.builder()
                                                         .accessToken(accessToken)
@@ -65,9 +67,9 @@ public class AuthService {
         return loginDTOResponse;
     }
 
-    public ResponseCookie createCookie(LoginDTO loginDTO, User user){     
+    public ResponseCookie handleCreateRefreshToken(User user){     
         RefreshToken refreshToken = this.securityUtil.createRefreshToken();
-        this.userService.updateUserRefreshToken(user,refreshToken);
+        this.refreshTokenService.handleAddUser(user.getId(), refreshToken);
 
         ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken.getToken())
                                                         .httpOnly(true)
@@ -76,6 +78,19 @@ public class AuthService {
                                                         .maxAge(refreshTokenExpiration)
                                                         .build();
         return responseCookie;
+    }
+
+    @Transactional
+    public LoginResult handleRefreshSession(String token){
+        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
+        LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(refreshToken.getUser());
+        ResponseCookie responseCookie = this.handleCreateRefreshToken(refreshToken.getUser());
+        this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
+
+        return LoginResult.builder()
+                            .loginDTOResponse(loginDTOResponse)
+                            .responseCookie(responseCookie)
+                            .build();
     }
 
     public UserLoginResponse handleGetAccount(){
@@ -92,9 +107,5 @@ public class AuthService {
                                                     .orElse(null);
         return userLoginResponse;
     }
-
-    public String handleGetRefreshToken(String token){
-        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
-        return refreshToken.getToken();
-    }
 }
+ 
