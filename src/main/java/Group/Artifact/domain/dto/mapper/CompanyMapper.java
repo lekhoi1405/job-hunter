@@ -1,8 +1,6 @@
 package Group.Artifact.domain.dto.mapper;
 
-import java.lang.annotation.Target;
 
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
