@@ -98,14 +98,12 @@ public class UserService {
         return this.userRepository.findByEmail(username).orElseThrow(()-> new BadCredentialsException("username not found"));
     }
 
-    @Transactional
-    public void updateUserRefreshToken(Long id , RefreshToken refreshToken){
-        User user = this.userRepository.findById(id).orElseThrow(IdInvalidException::new);
-        user.addToken(refreshToken);
-    }
-
     public User handleGetUserProxyById(Long id){
         return this.userRepository.getReferenceById(id);
     } 
 
+    public void handleDeleteRefreshToken(User user){
+        user.setRefreshToken(null);
+        this.userRepository.save(user);
+    }
 }

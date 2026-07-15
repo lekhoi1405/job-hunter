@@ -25,6 +25,14 @@ public class RefreshTokenService {
         return refreshToken;
     }
 
+    public RefreshToken handleGetRefreshTokenByTokenWithUser(String token){
+        RefreshToken refreshToken = this.refreshTokenRepository.findByTokenWithUser(token).
+                                        orElseThrow(() -> new RuntimeException("this token is not existed"));
+        this.handleVerifyRefreshToken(refreshToken);
+
+        return refreshToken;
+    }
+
     public RefreshToken handleGetRefreshTokenByToken(String token){
         RefreshToken refreshToken = this.refreshTokenRepository.findByToken(token).
                                         orElseThrow(() -> new RuntimeException("this token is not existed"));

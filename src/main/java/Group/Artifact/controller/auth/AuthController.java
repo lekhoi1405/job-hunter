@@ -33,6 +33,13 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResult.getResponseCookie().toString()).body(loginResult.getLoginDTOResponse());
     }
 
+    @ApiMessage("Logout success")
+    @PostMapping("/Logout")
+    public ResponseEntity<Void> logout(@CookieValue("refresh_token") String refreshToken){
+        this.authService.handleLogout(refreshToken);
+        return ResponseEntity.ok().body(null);
+    }
+
     @ApiMessage("Get account")
     @GetMapping("/account")
     public ResponseEntity<UserLoginResponse> getAccount(){
@@ -41,7 +48,7 @@ public class AuthController {
 
     @ApiMessage("Get refresh token")
     @GetMapping("/refresh")
-    public ResponseEntity<LoginDTOResponse> refreshSession(@CookieValue(name = "refresh_token") String refreshToken){
+    public ResponseEntity<LoginDTOResponse> refreshSession(@CookieValue("refresh_token") String refreshToken){
         LoginResult loginResult = this.authService.handleRefreshSession(refreshToken);
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResult.getResponseCookie().toString()).body(loginResult.getLoginDTOResponse());
     }

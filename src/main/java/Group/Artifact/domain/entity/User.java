@@ -39,7 +39,7 @@ public class User extends AuditBaseEntity{
     private String address;
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<RefreshToken> refreshToken = new ArrayList<>();
 
     public void addToken(RefreshToken refreshToken){

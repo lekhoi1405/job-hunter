@@ -82,7 +82,7 @@ public class AuthService {
 
     @Transactional
     public LoginResult handleRefreshSession(String token){
-        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
+        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByTokenWithUser(token);
         LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(refreshToken.getUser());
         ResponseCookie responseCookie = this.handleCreateRefreshToken(refreshToken.getUser());
         this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
@@ -106,6 +106,12 @@ public class AuthService {
                                                                                 .build())
                                                     .orElse(null);
         return userLoginResponse;
+    }
+
+    @Transactional
+    public void handleLogout(String token){
+        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
+        this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
     }
 }
  
