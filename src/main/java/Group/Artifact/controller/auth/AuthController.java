@@ -2,6 +2,7 @@ package Group.Artifact.controller.auth;
 
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,10 +35,10 @@ public class AuthController {
     }
 
     @ApiMessage("Logout success")
-    @PostMapping("/Logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logout(@CookieValue("refresh_token") String refreshToken){
-        this.authService.handleLogout(refreshToken);
-        return ResponseEntity.ok().body(null);
+        ResponseCookie responseCookie = this.authService.handleLogout(refreshToken);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(null);
     }
 
     @ApiMessage("Get account")

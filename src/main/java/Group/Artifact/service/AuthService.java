@@ -109,9 +109,15 @@ public class AuthService {
     }
 
     @Transactional
-    public void handleLogout(String token){
+    public ResponseCookie handleLogout(String token){
         RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
         this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
+        return ResponseCookie.from("refresh_token", null)
+                                                        .httpOnly(true)
+                                                        .secure(true)
+                                                        .path("/")
+                                                        .maxAge(0)
+                                                        .build();
     }
 }
  
