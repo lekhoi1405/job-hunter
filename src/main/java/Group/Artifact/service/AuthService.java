@@ -9,11 +9,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 
-import Group.Artifact.domain.dto.login.LoginDTOResponse;
-import Group.Artifact.domain.dto.login.LoginResult;
-import Group.Artifact.domain.dto.login.UserDetailsCustom;
-import Group.Artifact.domain.dto.login.UserLoginResponse;
-import Group.Artifact.domain.dto.request.LoginDTO;
+import Group.Artifact.config.UserDetailsCustom;
+import Group.Artifact.domain.dto.LoginDTO;
+import Group.Artifact.domain.dto.response.login.UserLogin;
+import Group.Artifact.domain.dto.response.login.UserLoginResponse;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.util.SecurityUtil;
@@ -32,9 +31,10 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-    public LoginResult handleVerifyUserLogin(LoginDTO loginDTO){
+
+    public LoginDTO.Result handleVerifyUserLogin(LoginDTO.Request request){
         UsernamePasswordAuthenticationToken authenticationToken
-            = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+            = new UsernamePasswordAuthenticationToken(request.username(), request.password());
 
         Authentication authentication 
             = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -42,29 +42,20 @@ public class AuthService {
         UserDetailsCustom userDetailsCustom = (UserDetailsCustom)authentication.getPrincipal();
         User user = userDetailsCustom.getUser();
 
-        LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(user);
+        LoginDTO.Response response = this.handleCreateAccessToken(user);
         ResponseCookie responseCookie = this.handleCreateRefreshToken(user);
 
-        return LoginResult.builder()
-                            .loginDTOResponse(loginDTOResponse)
-                            .responseCookie(responseCookie)
-                            .build();
+        return new LoginDTO.Result(response, responseCookie);
     }
 
-    public LoginDTOResponse handleCreateAccessToken(User user){
+    public LoginDTO.Response handleCreateAccessToken(User user){
         UserLoginResponse userLoginResponse = UserLoginResponse.builder()
                                                                .id(user.getId())
                                                                .email(user.getEmail())
                                                                .name(user.getName())
                                                                .build();
-
         String accessToken = this.securityUtil.createAccessToken(userLoginResponse);                                                       
-
-        LoginDTOResponse loginDTOResponse = LoginDTOResponse.builder()
-                                                        .accessToken(accessToken)
-                                                        .userLoginResponse(userLoginResponse)
-                                                        .build();
-        return loginDTOResponse;
+        return new LoginDTO.Response(accessToken, userLoginResponse);
     }
 
     public ResponseCookie handleCreateRefreshToken(User user){     
@@ -81,37 +72,41 @@ public class AuthService {
     }
 
     @Transactional
-    public LoginResult handleRefreshSession(String token){
+    public LoginDTO.Result handleRefreshSession(String token){
         RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByTokenWithUser(token);
-        LoginDTOResponse loginDTOResponse = this.handleCreateAccessToken(refreshToken.getUser());
+        LoginDTO.Response response = this.handleCreateAccessToken(refreshToken.getUser());
         ResponseCookie responseCookie = this.handleCreateRefreshToken(refreshToken.getUser());
         this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
 
-        return LoginResult.builder()
-                            .loginDTOResponse(loginDTOResponse)
-                            .responseCookie(responseCookie)
-                            .build();
+        return new LoginDTO.Result(response, responseCookie);
     }
 
     public UserLoginResponse handleGetAccount(){
-        String email = SecurityUtil.getCurrentUser().orElseThrow(() -> new InternalError(""));
+        UserLogin userLogin = SecurityUtil.getCurrentUser().orElseThrow(() -> new InternalError(""));
 
-        User user = this.userService.handleGetUserByUsername(email);
+        User user = this.userService.handleGetUserByUsername(userLogin.getEmail());
 
         UserLoginResponse userLoginResponse = Optional.ofNullable(user)
                                                     .map(u -> UserLoginResponse.builder()
                                                                                 .id(u.getId())
                                                                                 .email(u.getEmail())
                                                                                 .name(u.getName())
+                                                                                .authorities(userLogin.getAuthorities())
                                                                                 .build())
                                                     .orElse(null);
         return userLoginResponse;
     }
 
     @Transactional
-    public void handleLogout(String token){
+    public ResponseCookie handleLogout(String token){
         RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
         this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
+        return ResponseCookie.from("refresh_token", null)
+                                                        .httpOnly(true)
+                                                        .secure(true)
+                                                        .path("/")
+                                                        .maxAge(0)
+                                                        .build();
     }
 }
  

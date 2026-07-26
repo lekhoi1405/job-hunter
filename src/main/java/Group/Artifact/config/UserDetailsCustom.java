@@ -1,4 +1,4 @@
-package Group.Artifact.domain.dto.login;
+package Group.Artifact.config;
 
 import java.util.Collection;
 import java.util.Collections;

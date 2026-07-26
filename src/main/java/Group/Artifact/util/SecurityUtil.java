@@ -20,7 +20,9 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.dto.login.UserLoginResponse;
+import Group.Artifact.domain.dto.LoginDTO;
+import Group.Artifact.domain.dto.response.login.UserLogin;
+import Group.Artifact.domain.dto.response.login.UserLoginResponse;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -70,21 +72,31 @@ public class SecurityUtil {
         return this.refreshTokenService.createRefreshToken(token, now, expiry);
     }
 
-    public static Optional<String> getCurrentUser(){
+    public static Optional<String> getCurrentUserUsername(){
+        UserLogin userLogin = getCurrentUser().orElse(null);
+        return Optional.ofNullable(userLogin.getEmail());
+    }
+
+    public static Optional<UserLogin> getCurrentUser(){
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
 
-    private static String extractPrincipal(Authentication authentication){
+    private static UserLogin extractPrincipal(Authentication authentication){
+        String email = null;
         if(authentication == null){
             return null;
         }else if(authentication.getPrincipal() instanceof UserDetails springSecurityUser){
-            return springSecurityUser.getUsername();
+            email = springSecurityUser.getUsername();
         }else if(authentication.getPrincipal() instanceof Jwt jwt){
-            return jwt.getSubject();
+            email = jwt.getSubject();
         }else if(authentication.getPrincipal() instanceof String string){
-            return string;
-        }return null;
+            email = string;
+        }
+        return UserLogin.builder()
+                        .email(email)
+                        .authorities(authentication.getAuthorities().stream().map(authority -> authority.getAuthority().toString()).toList())
+                        .build();
     }
 
     public static Optional<String> getCurrentUserJWt(){

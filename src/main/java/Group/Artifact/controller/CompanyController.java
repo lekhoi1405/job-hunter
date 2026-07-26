@@ -41,7 +41,7 @@ public class CompanyController {
                 @RequestParam Optional<Integer> current, 
                 @RequestParam Optional<Integer> pageSize,
                 @RequestParam Optional<String> filter){
-        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(2),filter.orElse("")));
+        return ResponseEntity.ok(this.companyService.handleGetAllCompanies(current.orElse(1),pageSize.orElse(5),filter.orElse("")));
     }
 
     @ApiMessage("Get company by id")

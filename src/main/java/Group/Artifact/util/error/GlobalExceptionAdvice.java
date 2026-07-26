@@ -33,7 +33,7 @@ public class GlobalExceptionAdvice {
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(runtimeException.getMessage());
-        res.setMessage("Exception");
+        res.setMessage("Username or password incorrect!!");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
