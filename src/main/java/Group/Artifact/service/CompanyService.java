@@ -11,13 +11,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import Group.Artifact.domain.dto.CompanyDTO;
-import Group.Artifact.domain.dto.mapper.CompanyMapper;
-import Group.Artifact.domain.dto.response.Meta;
 import Group.Artifact.domain.dto.response.ResultPagination;
+import Group.Artifact.domain.dto.response.ResultPagination.Meta;
 import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
+import Group.Artifact.service.mapper.CompanyMapper;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -62,10 +62,9 @@ public class CompanyService {
         List<CompanyDTO.Response> content = companyPageable.getContent().stream()
                                                         .map(this.companyMapper::toResponse)
                                                         .toList();
-
         return ResultPagination.<List<CompanyDTO.Response>>builder()
                                                         .meta(meta)
-                                                        .Result(content)
+                                                        .result(content)
                                                         .build();  
                                                                                                      
     }

@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import Group.Artifact.domain.dto.request.LoginDTO;
-import Group.Artifact.domain.dto.login.LoginDTOResponse;
-import Group.Artifact.domain.dto.login.LoginResult;
-import Group.Artifact.domain.dto.login.UserLoginResponse;
 import Group.Artifact.service.AuthService;
+import Group.Artifact.domain.dto.LoginDTO;
+import Group.Artifact.domain.dto.response.login.UserLoginResponse;
 import Group.Artifact.util.annotation.ApiMessage;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +22,14 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final AuthService authService; 
 
     @ApiMessage("Login success")
     @PostMapping("/login")
-    public ResponseEntity<LoginDTOResponse> login(@Valid @RequestBody LoginDTO loginDTO){
-        LoginResult loginResult = this.authService.handleVerifyUserLogin(loginDTO);
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResult.getResponseCookie().toString()).body(loginResult.getLoginDTOResponse());
+    public ResponseEntity<LoginDTO.Response> login(@Valid @RequestBody LoginDTO.Request loginDTO){
+        LoginDTO.Result result = this.authService.handleVerifyUserLogin(loginDTO);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, result.responseCookie().toString()).body(result.response());
     }
 
     @ApiMessage("Logout success")
@@ -49,8 +47,8 @@ public class AuthController {
 
     @ApiMessage("Get refresh token")
     @GetMapping("/refresh")
-    public ResponseEntity<LoginDTOResponse> refreshSession(@CookieValue("refresh_token") String refreshToken){
-        LoginResult loginResult = this.authService.handleRefreshSession(refreshToken);
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, loginResult.getResponseCookie().toString()).body(loginResult.getLoginDTOResponse());
+    public ResponseEntity<LoginDTO.Response> refreshSession(@CookieValue("refresh_token") String refreshToken){
+        LoginDTO.Result result = this.authService.handleRefreshSession(refreshToken);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, result.responseCookie().toString()).body(result.response());
     }
 }   

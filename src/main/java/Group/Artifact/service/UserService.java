@@ -18,10 +18,10 @@ import Group.Artifact.domain.entity.User;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.domain.dto.UserDTO;
-import Group.Artifact.domain.dto.mapper.UserMapper;
-import Group.Artifact.domain.dto.response.Meta;
 import Group.Artifact.domain.dto.response.ResultPagination;
+import Group.Artifact.domain.dto.response.ResultPagination.Meta;
 import Group.Artifact.repository.UserRepository;
+import Group.Artifact.service.mapper.UserMapper;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public ResultPagination<List<UserDTO.Response>> handleFindAllUser(Integer current, Integer pageSize, String filter){
-        Sort sort = Sort.by("id").descending();
+        Sort sort = Sort.by("id").ascending();
         Pageable pageable = PageRequest.of(current-1, pageSize, sort);
 
         Specification<User> specification = Specification.where(null);
@@ -78,7 +78,7 @@ public class UserService {
 
         return ResultPagination.<List<UserDTO.Response>> builder()
                                                             .meta(meta)
-                                                            .Result(content)
+                                                            .result(content)
                                                             .build();
     }
 

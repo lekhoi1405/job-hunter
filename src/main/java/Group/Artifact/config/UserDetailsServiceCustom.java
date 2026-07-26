@@ -1,4 +1,4 @@
-package Group.Artifact.service;
+package Group.Artifact.config;
 
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import Group.Artifact.domain.dto.login.UserDetailsCustom;
+import Group.Artifact.service.UserService;
 import lombok.RequiredArgsConstructor;
 
 

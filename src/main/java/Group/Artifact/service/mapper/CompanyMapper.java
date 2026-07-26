@@ -1,4 +1,4 @@
-package Group.Artifact.domain.dto.mapper;
+package Group.Artifact.service.mapper;
 
 
 import org.mapstruct.Mapper;

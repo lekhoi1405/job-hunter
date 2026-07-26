@@ -13,9 +13,9 @@ public class AuditListener {
             Instant now = Instant.now();
             auditBaseEntity.setCreatedAt(now);
             auditBaseEntity.setUpdatedAt(now);
-            auditBaseEntity.setCreatedBy(SecurityUtil.getCurrentUser()
+            auditBaseEntity.setCreatedBy(SecurityUtil.getCurrentUserUsername()
                                 .orElse("admin"));
-            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUser()
+            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUserUsername()
                                 .orElse("admin"));
         }
     }
@@ -24,7 +24,7 @@ public class AuditListener {
     public void onPreUpdated(Object object){
         if(object instanceof AuditBaseEntity auditBaseEntity){
             auditBaseEntity.setUpdatedAt(Instant.now());
-            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUser()
+            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUserUsername()
                                 .orElse("admin"));
         }
     }
