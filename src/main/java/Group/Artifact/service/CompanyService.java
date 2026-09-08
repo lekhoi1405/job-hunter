@@ -17,6 +17,7 @@ import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
+import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.CompanyMapper;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
+    private final UserRepository userRepository;
 
     public CompanyDTO.Response handleCreateCompany(CompanyDTO.CreateRequest companyCreateRequest){
         Company company = this.companyMapper.toEntity(companyCreateRequest);
@@ -78,14 +80,26 @@ public class CompanyService {
         
         return this.companyMapper.toResponse(company);
     }
-
-    public CompanyDTO.Response handleGetCompanyById(Long id){
+    
+    public CompanyDTO.Response handleGetCompanyDTOById(Long id){
         return this.companyMapper.toResponse(this.companyRepository.findById(id)
                                                 .orElseThrow(IdInvalidException::new));
     }
 
+    public Company handleGetCompanyProxyById(Long id){
+        return companyRepository.getReferenceById(id);
+    }
+
+    public Company handleGetCompanyById(Long id){
+        return this.companyRepository.findById(id).orElseThrow(IdInvalidException::new);
+    }
+
+    @Transactional
     public void handleDeleteCompanyById(Long id){
+        this.userRepository.setNullByCompanyId(id);
         this.companyRepository.delete(this.companyRepository.findById(id)
                                     .orElseThrow(IdInvalidException::new));
     }
+
+
 }

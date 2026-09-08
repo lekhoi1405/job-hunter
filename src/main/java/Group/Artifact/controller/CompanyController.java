@@ -47,7 +47,7 @@ public class CompanyController {
     @ApiMessage("Get company by id")
     @GetMapping("/{id}")
     public ResponseEntity<CompanyDTO.Response> getCompanyById(@PathVariable Long id){
-        return ResponseEntity.ok(this.companyService.handleGetCompanyById(id));
+        return ResponseEntity.ok(this.companyService.handleGetCompanyDTOById(id));
     }
     
     @ApiMessage("Update company")

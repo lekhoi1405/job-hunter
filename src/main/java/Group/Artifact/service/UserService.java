@@ -1,6 +1,5 @@
 package Group.Artifact.service;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.entity.RefreshToken;
+import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
@@ -30,16 +29,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final CompanyService companyService;
 
 
     public UserDTO.CreateResponse handleCreateUser(UserDTO.CreateRequest createRequest){
         if(this.userRepository.existsByEmail(createRequest.email()))throw new IdInvalidException("email existed");
         User user = userMapper.toEntity(createRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return this.userMapper.toCreateResponse(this.userRepository.save(user));  
+        if(createRequest.companyId()!=null){
+            Company company = this.companyService.handleGetCompanyProxyById(createRequest.companyId());
+            user.setCompany(company);
+        }
+        return this.userMapper.toCreateResponse(this.userRepository.save(user));
     }
 
     public UserDTO.Response handleFindUserById(long id){
@@ -81,9 +86,11 @@ public class UserService {
                                                             .result(content)
                                                             .build();
     }
-
+    
+    @Transactional
     public void handleDeleteUser(long id){
-        if(id > 1500)throw new IdInvalidException("khong lon hon 1500");
+        if(id > 1500)throw new IdInvalidException();
+        this.refreshTokenService.handleDeleteByUserId(id);
         this.userRepository.deleteById(id);
     }
 
@@ -91,6 +98,7 @@ public class UserService {
     public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
         User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
         this.userMapper.update(userUpdateRequest, current);
+        current.setCompany(this.companyService.handleGetCompanyProxyById(userUpdateRequest.companyId()));
         return this.userMapper.toUpdateResponse(current);
     }
 
@@ -103,7 +111,7 @@ public class UserService {
     } 
 
     public void handleDeleteRefreshToken(User user){
-        user.setRefreshToken(null);
+        user.setRefreshTokens(null);
         this.userRepository.save(user);
     }
 }
