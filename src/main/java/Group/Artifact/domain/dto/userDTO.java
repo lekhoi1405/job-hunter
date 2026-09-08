@@ -11,7 +11,8 @@ public interface UserDTO {
         String email, 
         String address, 
         Integer age, 
-        GenderEnum gender, 
+        GenderEnum gender,
+        Long companyId, 
         Instant createdAt, 
         String createdBy, 
         Instant updatedAt, 
@@ -22,7 +23,8 @@ public interface UserDTO {
         String email, 
         String password, 
         Integer age, 
-        GenderEnum gender, 
+        GenderEnum gender,
+        Long companyId,  
         String address){}
     record CreateResponse(
         Long id,
@@ -31,14 +33,17 @@ public interface UserDTO {
         String address,
         Integer age,
         GenderEnum gender,
+        Long companyId,
         Instant createdAt,
-        String createdBy){}
+        String createdBy){
+        }
 
     record UpdateRequest(
         Long id,
         String name,
         String address,
         Integer age,
+        Long companyId,  
         GenderEnum gender){}
     record UpdateResponse(
         Long id,
@@ -46,6 +51,7 @@ public interface UserDTO {
         String address,
         Integer age,
         GenderEnum gender,
+        Long companyId,  
         Instant updatedAt,
         String updatedBy){}
 

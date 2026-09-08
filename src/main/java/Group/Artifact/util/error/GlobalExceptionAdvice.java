@@ -3,6 +3,7 @@ package Group.Artifact.util.error;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,11 +22,21 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<RestResponse<Object>> handleAllException(Exception exception){
-                RestResponse<Object> res = new RestResponse<>();
+        RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(exception.getMessage());
         res.setMessage("Sever has error");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(res);
+    }
+
+    @ExceptionHandler(value = DataIntegrityViolationException.class)
+    public ResponseEntity<RestResponse<Object>> handleDataIntegrityViolationException(DataIntegrityViolationException exception){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError("Data Integrity Violation Exception");
+        res.setMessage("Data Integrity Violation");
+        
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
     @ExceptionHandler(value = {BadCredentialsException.class, IdInvalidException.class} ) 

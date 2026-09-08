@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
+    
     private final UserService userService;
    
     @ApiMessage("Create User")
