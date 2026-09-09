@@ -8,8 +8,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import Group.Artifact.domain.dto.UserDTO;
 import Group.Artifact.domain.entity.User;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        uses = {CompanyMapper.class})
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
     @Mapping(target = "companyId", source = "company.id")
     UserDTO.Response toResponse(User user);

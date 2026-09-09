@@ -60,7 +60,7 @@ public class AuthService {
 
     public ResponseCookie handleCreateRefreshToken(User user){     
         RefreshToken refreshToken = this.securityUtil.createRefreshToken();
-        this.refreshTokenService.handleAddUser(user.getId(), refreshToken);
+        this.refreshTokenService.handleAddUser(user, refreshToken);
 
         ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken.getToken())
                                                         .httpOnly(true)

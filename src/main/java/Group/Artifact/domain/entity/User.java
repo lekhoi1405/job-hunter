@@ -33,6 +33,7 @@ public class User extends AuditBaseEntity{
     private String password;
     private Integer age;
 
+    @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
     private String address;

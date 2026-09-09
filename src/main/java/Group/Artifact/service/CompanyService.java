@@ -52,16 +52,16 @@ public class CompanyService {
                 specification = specification.and(genericSpecification);
             }
         }
-        Page<Company>  companyPageable = this.companyRepository.findAll(specification, pageable);
+        Page<Company> companyPage = this.companyRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
-                        .current(companyPageable.getNumber()+1)
-                        .pageSize(companyPageable.getSize())
-                        .pages(companyPageable.getTotalPages())
-                        .total(companyPageable.getTotalElements())
+                        .current(companyPage.getNumber()+1)
+                        .pageSize(companyPage.getSize())
+                        .pages(companyPage.getTotalPages())
+                        .total(companyPage.getTotalElements())
                         .build();
                                                         
-        List<CompanyDTO.Response> content = companyPageable.getContent().stream()
+        List<CompanyDTO.Response> content = companyPage.getContent().stream()
                                                         .map(this.companyMapper::toResponse)
                                                         .toList();
         return ResultPagination.<List<CompanyDTO.Response>>builder()
