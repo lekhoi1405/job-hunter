@@ -47,9 +47,8 @@ public class RefreshTokenService {
         if(refreshToken.getExpiryDate().isBefore(Instant.now()))throw new RuntimeException("refresh token is expired");
     }
 
-    public void handleAddUser(Long id, RefreshToken refreshToken){
-        User userProxy = this.userRepository.getReferenceById(id);
-        refreshToken.setUser(userProxy);
+    public void handleAddUser(User userId, RefreshToken refreshToken){
+        refreshToken.setUser(userId);
         this.refreshTokenRepository.save(refreshToken);
     }
 

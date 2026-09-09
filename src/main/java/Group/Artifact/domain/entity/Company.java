@@ -32,6 +32,10 @@ public class Company extends AuditBaseEntity{
     private String logo;
     
     @Builder.Default
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
     private List<User> users = new ArrayList<>();
+    
+    @Builder.Default
+    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+    private List<Job> jobs = new ArrayList<>();
 }

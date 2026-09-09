@@ -41,7 +41,7 @@ public class UserService {
         User user = userMapper.toEntity(createRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(createRequest.companyId()!=null){
-            Company company = this.companyService.handleGetCompanyProxyById(createRequest.companyId());
+            Company company = this.companyService.handleGetCompanyById(createRequest.companyId());
             user.setCompany(company);
         }
         return this.userMapper.toCreateResponse(this.userRepository.save(user));
@@ -70,16 +70,16 @@ public class UserService {
             }
         }
 
-        Page<User> page = this.userRepository.findAll(specification, pageable);
+        Page<User> UserPage = this.userRepository.findAll(specification, pageable);
 
         Meta meta = Meta.builder()
-                        .current(page.getNumber()+1)
-                        .pageSize(page.getSize())
-                        .pages(page.getTotalPages())
-                        .total(page.getTotalElements())
+                        .current(UserPage.getNumber()+1)
+                        .pageSize(UserPage.getSize())
+                        .pages(UserPage.getTotalPages())
+                        .total(UserPage.getTotalElements())
                         .build();
 
-        List<UserDTO.Response> content = page.getContent().stream().map(user -> this.userMapper.toResponse(user)).toList();
+        List<UserDTO.Response> content = UserPage.getContent().stream().map(user -> this.userMapper.toResponse(user)).toList();
 
         return ResultPagination.<List<UserDTO.Response>> builder()
                                                             .meta(meta)
@@ -98,7 +98,9 @@ public class UserService {
     public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
         User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
         this.userMapper.update(userUpdateRequest, current);
-        current.setCompany(this.companyService.handleGetCompanyProxyById(userUpdateRequest.companyId()));
+        if(!current.getCompany().getId().equals(userUpdateRequest.companyId())){
+            current.setCompany(this.companyService.handleGetCompanyProxyById(userUpdateRequest.companyId()));
+        }
         return this.userMapper.toUpdateResponse(current);
     }
 
