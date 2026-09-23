@@ -17,6 +17,8 @@ import Group.Artifact.domain.entity.Company;
 import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
+import Group.Artifact.repository.JobRepository;
+import Group.Artifact.repository.JobSKillRepository;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.CompanyMapper;
 import Group.Artifact.util.error.IdInvalidException;
@@ -29,6 +31,8 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
     private final UserRepository userRepository;
+    private final JobRepository jobRepository;
+    private final JobSKillRepository jobSKillRepository;
 
     public CompanyDTO.Response handleCreateCompany(CompanyDTO.CreateRequest companyCreateRequest){
         Company company = this.companyMapper.toEntity(companyCreateRequest);
@@ -36,6 +40,7 @@ public class CompanyService {
         return this.companyMapper.toResponse(company);
     } 
 
+    @Transactional 
     public ResultPagination<List<CompanyDTO.Response>> handleGetAllCompanies(Integer current,Integer pageSize, String filterRequest){
         Sort sort = Sort.by("id").ascending();
         Pageable pageable = PageRequest.of(current-1, pageSize, sort);
@@ -53,7 +58,7 @@ public class CompanyService {
             }
         }
         Page<Company> companyPage = this.companyRepository.findAll(specification, pageable);
-
+        companyPage.getContent().stream().map(c -> c.getJobs().stream().map(j -> j.getName()).toList()).toList();
         Meta meta = Meta.builder()
                         .current(companyPage.getNumber()+1)
                         .pageSize(companyPage.getSize())
@@ -96,9 +101,11 @@ public class CompanyService {
 
     @Transactional
     public void handleDeleteCompanyById(Long id){
+        Company company = this.companyRepository.findById(id).orElseThrow(IdInvalidException::new);
         this.userRepository.setNullByCompanyId(id);
-        this.companyRepository.delete(this.companyRepository.findById(id)
-                                    .orElseThrow(IdInvalidException::new));
+        this.jobSKillRepository.deleteByCompanyId(id);
+        this.jobRepository.deleteByCompanyId(id);
+        this.companyRepository.delete(company);
     }
 
 

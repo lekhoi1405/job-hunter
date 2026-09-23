@@ -35,7 +35,7 @@ public class Job extends AuditBaseEntity{
     private String description;
     private LocalDate startDay;
     private LocalDate endDay;
-    private Boolean active;
+    private Boolean active; 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")

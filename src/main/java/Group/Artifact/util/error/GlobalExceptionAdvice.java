@@ -23,7 +23,7 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<RestResponse<Object>> handleAllException(Exception exception){
         RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         res.setError(exception.getMessage());
         res.setMessage("Sever has error");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value()).body(res);
@@ -39,12 +39,21 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
-    @ExceptionHandler(value = {BadCredentialsException.class, IdInvalidException.class} ) 
-    public ResponseEntity<RestResponse<Object>> handleException(RuntimeException runtimeException){
+    @ExceptionHandler(value = BadCredentialsException.class ) 
+    public ResponseEntity<RestResponse<Object>> handleBadCredentialsException(BadCredentialsException badCredentialsException){
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(runtimeException.getMessage());
+        res.setError(badCredentialsException.getMessage());
         res.setMessage("Username or password incorrect!!");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
+
+    @ExceptionHandler(value = IdInvalidException.class)
+    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(IdInvalidException idInvalidException){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(idInvalidException.getMessage());
+        res.setMessage("Id invalid");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 

@@ -3,6 +3,8 @@ package Group.Artifact.domain.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.BatchSize;
+
 import Group.Artifact.domain.base.AuditBaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,10 +34,11 @@ public class Company extends AuditBaseEntity{
     private String logo;
     
     @Builder.Default
-    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "company")
     private List<User> users = new ArrayList<>();
     
     @Builder.Default
-    @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "company")
+    @BatchSize(size = 10)
     private List<Job> jobs = new ArrayList<>();
 }

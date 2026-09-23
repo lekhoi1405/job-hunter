@@ -31,7 +31,6 @@ public class AuthService {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;
 
-
     public LoginDTO.Result handleVerifyUserLogin(LoginDTO.Request request){
         UsernamePasswordAuthenticationToken authenticationToken
             = new UsernamePasswordAuthenticationToken(request.username(), request.password());

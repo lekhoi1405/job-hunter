@@ -7,11 +7,13 @@ import Group.Artifact.util.constant.LevelEnum;
 
 public interface JobDTO {
     record Response(
+        Long id,
         String name,
         String location,
         Integer quantity,
         LevelEnum level,
         String description,
+        Long companyId,
         LocalDate startDay,
         LocalDate endDay
     ){}
@@ -23,10 +25,13 @@ public interface JobDTO {
         LevelEnum level,
         String description,
         LocalDate startDay,
-        LocalDate endDay
+        LocalDate endDay,
+        List<Long>skillIds,
+        Long companyId
     ){}
 
-    record CreateWithSkillRequest(
+    record UpdateRequest(
+        Long id,
         String name,
         String location,
         Integer quantity,
@@ -34,16 +39,7 @@ public interface JobDTO {
         String description,
         LocalDate startDay,
         LocalDate endDay,
-        List<Long>SkillId
-    ){}
-        record CreateWithSkillResponse(
-        String name,
-        String location,
-        Integer quantity,
-        LevelEnum level,
-        String description,
-        LocalDate startDay,
-        LocalDate endDay,
-        List<Long>SkillId
+        List<Long>skillId,
+        Long companyId
     ){}
 }
