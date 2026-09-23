@@ -3,8 +3,10 @@ package Group.Artifact.controller;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,15 +24,16 @@ public class JobController {
 
     private final JobService jobService;
 
-    @ApiMessage("Create Job")
-    @PostMapping 
+    @ApiMessage("Create Job With Skill")
+    @PostMapping
     public ResponseEntity<JobDTO.Response> createJob(@RequestBody JobDTO.CreateRequest createRequest){
         return ResponseEntity.ok().body(this.jobService.handleCreateJob(createRequest));
     }
+
     @ApiMessage("Create Job With Skill")
-    @PostMapping("/skill")
-    public ResponseEntity<JobDTO.Response> createJobWithSkill(@RequestBody JobDTO.CreateWithSkillRequest createRequest){
-        return ResponseEntity.ok().body(this.jobService.handleCreateJobWithSkill(createRequest));
+    @PutMapping 
+    public ResponseEntity<JobDTO.Response> UpdateJob(@RequestBody JobDTO.UpdateRequest updateRequest){
+        return ResponseEntity.ok().body(this.jobService.handleUpdateJob(updateRequest));
     }
     
 
@@ -43,4 +46,11 @@ public class JobController {
     ){
         return ResponseEntity.ok().body(this.jobService.handleGetAllJob(current.orElse(1), pageSize.orElse(2), filter.orElse("")));
     }
+
+    @ApiMessage("Delete Job")
+    @DeleteMapping
+    public ResponseEntity<Void> deleteJob(@RequestParam Long jobId){
+        this.jobService.handleDeleteJob(jobId);
+        return ResponseEntity.ok().body(null);
+    } 
 }

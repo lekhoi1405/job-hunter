@@ -1,9 +1,22 @@
 package Group.Artifact.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import Group.Artifact.domain.entity.JobSkill;
 
 public interface JobSKillRepository extends JpaRepository<JobSkill, Long>{
+    @Modifying 
+    @Query("DELETE FROM JobSkill js WHERE js.job.id = :jobId and js.skill.id = :skillId")
+    void deleteByJobIdAndSkillId(@Param("jobId") Long jobId, @Param("skillId") Long skillId);
 
+    @Modifying 
+    @Query("DELETE FROM JobSkill js WHERE js.job.id = :jobId")
+    void deleteByJobId(@Param("jobId")Long jobId);
+
+    @Modifying 
+    @Query("DELETE FROM JobSkill js WHERE js.job.id IN (SELECT j.id FROM Job j WHERE j.company.id = :companyId)")
+    int  deleteByCompanyId(Long companyId);
 }

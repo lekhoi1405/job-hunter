@@ -89,7 +89,6 @@ public class UserService {
     
     @Transactional
     public void handleDeleteUser(long id){
-        if(id > 1500)throw new IdInvalidException();
         this.refreshTokenService.handleDeleteByUserId(id);
         this.userRepository.deleteById(id);
     }

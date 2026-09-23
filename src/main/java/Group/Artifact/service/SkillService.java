@@ -17,4 +17,6 @@ public class SkillService {
         Skill skill = this.skillMapper.toEntity(createRequest);
         return this.skillMapper.toResponse(this.skillRepository.save(skill));
     }
+
+    
 }
