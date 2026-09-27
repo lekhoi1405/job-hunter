@@ -1,6 +1,7 @@
 package Group.Artifact.service.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import Group.Artifact.domain.dto.SkillDTO;
@@ -10,4 +11,6 @@ import Group.Artifact.domain.entity.Skill;
 public interface SkillMapper {
     Skill toEntity(SkillDTO.CreateRequest createRequest);
     SkillDTO.Response toResponse(Skill skill);
+
+    void update(SkillDTO.UpdateRequest updateRequest, @MappingTarget Skill skill);
 }

@@ -11,5 +11,6 @@ import Group.Artifact.domain.entity.Skill;
 
 public interface SkillRepository extends JpaRepository<Skill,Long>, JpaSpecificationExecutor<Skill>{
     Page<Skill> findAll(Specification<Skill> specification, Pageable pageable);
+    boolean existsByName(String name);
     
 }

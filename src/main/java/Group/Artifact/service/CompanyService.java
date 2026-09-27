@@ -18,7 +18,7 @@ import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.repository.JobRepository;
-import Group.Artifact.repository.JobSKillRepository;
+import Group.Artifact.repository.JobSkillRepository;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.CompanyMapper;
 import Group.Artifact.util.error.IdInvalidException;
@@ -32,7 +32,7 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
-    private final JobSKillRepository jobSKillRepository;
+    private final JobSkillRepository jobSkillRepository;
 
     public CompanyDTO.Response handleCreateCompany(CompanyDTO.CreateRequest companyCreateRequest){
         Company company = this.companyMapper.toEntity(companyCreateRequest);
@@ -103,10 +103,8 @@ public class CompanyService {
     public void handleDeleteCompanyById(Long id){
         Company company = this.companyRepository.findById(id).orElseThrow(IdInvalidException::new);
         this.userRepository.setNullByCompanyId(id);
-        this.jobSKillRepository.deleteByCompanyId(id);
+        this.jobSkillRepository.deleteByCompanyId(id);
         this.jobRepository.deleteByCompanyId(id);
         this.companyRepository.delete(company);
     }
-
-
 }

@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import Group.Artifact.domain.entity.JobSkill;
 
-public interface JobSKillRepository extends JpaRepository<JobSkill, Long>{
+public interface JobSkillRepository extends JpaRepository<JobSkill, Long>{
     @Modifying 
     @Query("DELETE FROM JobSkill js WHERE js.job.id = :jobId and js.skill.id = :skillId")
     void deleteByJobIdAndSkillId(@Param("jobId") Long jobId, @Param("skillId") Long skillId);
@@ -18,5 +18,9 @@ public interface JobSKillRepository extends JpaRepository<JobSkill, Long>{
 
     @Modifying 
     @Query("DELETE FROM JobSkill js WHERE js.job.id IN (SELECT j.id FROM Job j WHERE j.company.id = :companyId)")
-    int  deleteByCompanyId(Long companyId);
+    void  deleteByCompanyId(Long companyId);
+
+    @Modifying 
+    @Query("DELETE FROM JobSkill js where js.skill.id = :skillId")
+    void deleteBySkillId(Long skillId);
 }

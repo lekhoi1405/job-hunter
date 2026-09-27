@@ -8,6 +8,8 @@ import Group.Artifact.domain.base.AuditBaseEntity;
 import Group.Artifact.util.constant.LevelEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -30,7 +32,10 @@ public class Job extends AuditBaseEntity{
     private String name;
     private String location;
     private Integer quantity;
+
+    @Enumerated(EnumType.STRING)
     private LevelEnum level;
+    
     @Column(columnDefinition = "MEDIUMTEXT")
     private String description;
     private LocalDate startDay;

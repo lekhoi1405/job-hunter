@@ -23,7 +23,7 @@ import Group.Artifact.domain.specification.GenericSpecification;
 import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.repository.JobRepository;
-import Group.Artifact.repository.JobSKillRepository;
+import Group.Artifact.repository.JobSkillRepository;
 import Group.Artifact.repository.SkillRepository;
 import Group.Artifact.service.mapper.JobMapper;
 import Group.Artifact.util.error.IdInvalidException;
@@ -36,7 +36,7 @@ public class JobService {
     private final CompanyRepository companyRepository;
     private final JobRepository jobRepository;
     private final SkillRepository skillRepository;
-    private final JobSKillRepository jobSKillRepository;
+    private final JobSkillRepository jobSkillRepository;
     private final JobMapper jobMapper;
 
     @Transactional 
@@ -64,7 +64,7 @@ public class JobService {
                                             .build();
                 jobSkills.add(jobSkill);
             }
-            this.jobSKillRepository.saveAll(jobSkills);
+            this.jobSkillRepository.saveAll(jobSkills);
     }
 
     @Transactional 
@@ -87,15 +87,14 @@ public class JobService {
         skillToAdd.removeAll(oldSkillId);
 
         for(Long id : skillToDelete){
-            this.jobSKillRepository.deleteByJobIdAndSkillId(job.getId(), id);
+            this.jobSkillRepository.deleteByJobIdAndSkillId(job.getId(), id);
         }
-        this.jobRepository.save(job);
         for(Long id : skillToAdd){
             JobSkill jobSkill = JobSkill.builder()
                                         .job(job)
                                         .skill(this.skillRepository.getReferenceById(id))
                                         .build();
-            this.jobSKillRepository.save(jobSkill);
+            this.jobSkillRepository.save(jobSkill);
         }
         return this.jobMapper.toResponse(job);
 
@@ -133,8 +132,8 @@ public class JobService {
 
     @Transactional 
     public void handleDeleteJob(Long jobId){
-        this.jobRepository.findById(jobId).orElseThrow(IdInvalidException::new);
-        this.jobSKillRepository.deleteByJobId(jobId);
-        this.jobRepository.deleteById(jobId);
+        Job job = this.jobRepository.findById(jobId).orElseThrow(IdInvalidException::new);
+        this.jobSkillRepository.deleteByJobId(job.getId());
+        this.jobRepository.deleteById(job.getId());
     }
 }
