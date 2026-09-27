@@ -1,14 +1,18 @@
 package Group.Artifact.domain.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public interface SkillDTO {
     record Response(
+        Long id,
         String name
     ){}
     record CreateRequest(
-        String name
+        @NotBlank String name
     ){}
     record UpdateRequest(
-        Long id,
-        String name
+        @NotNull Long id,
+        @NotBlank String name
     ){}
 }

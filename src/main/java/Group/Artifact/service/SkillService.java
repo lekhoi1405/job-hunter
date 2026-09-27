@@ -32,7 +32,7 @@ public class SkillService {
     private final JobSkillRepository jobSkillRepository;
 
     public SkillDTO.Response handleCreateSkill(SkillDTO.CreateRequest createRequest){
-        if(!this.skillRepository.existsByName(createRequest.name()))throw new AlreadyExistsException("Name has been exited");
+        if(this.skillRepository.existsByName(createRequest.name()))throw new AlreadyExistsException("Name has been exited");
         Skill skill = this.skillMapper.toEntity(createRequest);
         return this.skillMapper.toResponse(this.skillRepository.save(skill));
     }
@@ -68,6 +68,7 @@ public class SkillService {
         return resultPagination;
     }
 
+    @Transactional 
     public void handleDeleteSkill(Long id){
         Skill skill = this.skillRepository.findById(id).orElseThrow(IdInvalidException::new);
         this.jobSkillRepository.deleteBySkillId(id);

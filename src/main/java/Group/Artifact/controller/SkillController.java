@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import Group.Artifact.domain.dto.SkillDTO;
 import Group.Artifact.service.SkillService;
 import Group.Artifact.util.annotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController 
@@ -26,7 +27,7 @@ public class SkillController {
 
     @ApiMessage("Create Skill")
     @PostMapping 
-    public ResponseEntity<SkillDTO.Response> createSkill(@RequestBody SkillDTO.CreateRequest createRequest){
+    public ResponseEntity<SkillDTO.Response> createSkill(@RequestBody @Valid SkillDTO.CreateRequest createRequest){
         return ResponseEntity.ok().body(this.skillService.handleCreateSkill(createRequest));
     }
 
@@ -49,7 +50,7 @@ public class SkillController {
 
     @ApiMessage("Update skill")
     @PutMapping 
-    public ResponseEntity<SkillDTO.Response> Updateskill(@RequestBody SkillDTO.UpdateRequest updateRequest){
+    public ResponseEntity<SkillDTO.Response> Updateskill(@RequestBody @Valid SkillDTO.UpdateRequest updateRequest){
         return ResponseEntity.ok().body(this.skillService.handleUpdateSkill(updateRequest));
     }
 }

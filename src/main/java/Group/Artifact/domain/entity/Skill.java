@@ -23,7 +23,7 @@ import lombok.Setter;
 @NoArgsConstructor 
 @AllArgsConstructor 
 public class Skill extends AuditBaseEntity{
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @Builder.Default
