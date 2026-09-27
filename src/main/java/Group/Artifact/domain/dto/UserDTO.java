@@ -3,6 +3,9 @@ package Group.Artifact.domain.dto;
 import java.time.Instant;
 
 import Group.Artifact.util.constant.GenderEnum;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 
 public interface UserDTO {
     record Response(
@@ -19,9 +22,17 @@ public interface UserDTO {
         String updatedBy){}
 
     record CreateRequest(
-        String name, 
+        @NotBlank 
+        String name,
+        
+        @Email 
+        @NotBlank 
         String email, 
-        String password, 
+
+        @NotBlank 
+        String password,
+        
+        @Positive 
         Integer age, 
         GenderEnum gender,
         Long companyId,  
@@ -31,6 +42,8 @@ public interface UserDTO {
         String name,
         String email,
         String address,
+        
+        @Positive 
         Integer age,
         GenderEnum gender,
         Long companyId,
@@ -42,6 +55,8 @@ public interface UserDTO {
         Long id,
         String name,
         String address,
+
+        @Positive 
         Integer age,
         Long companyId,  
         GenderEnum gender){}
@@ -49,10 +64,10 @@ public interface UserDTO {
         Long id,
         String name,
         String address,
+
+        @Positive 
         Integer age,
         GenderEnum gender,
-        Long companyId,  
-        Instant updatedAt,
-        String updatedBy){}
+        Long companyId){}
 
 }

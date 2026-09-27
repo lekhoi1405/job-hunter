@@ -6,6 +6,7 @@ import java.util.List;
 import Group.Artifact.domain.base.AuditBaseEntity;
 import Group.Artifact.util.constant.GenderEnum;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,8 +29,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends AuditBaseEntity{
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String email;
+    
+    @Column(nullable = false)
     private String password;
     private Integer age;
 
@@ -45,12 +51,4 @@ public class User extends AuditBaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     private Company company;
-
-    public void addToken(RefreshToken refreshToken){
-        this.refreshTokens.add(refreshToken);
-        if(refreshToken != null){
-            refreshToken.setUser(this);
-        }
-    }
-
 }

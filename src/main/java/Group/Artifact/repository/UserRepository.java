@@ -16,7 +16,6 @@ public interface UserRepository extends JpaRepository<User,Long>, JpaSpecificati
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
     Page<User> findAll(Specification<User> specification, Pageable pageable);
-    void deleteById(int id);
     @Modifying
     @Query("UPDATE User u SET u.company = null where u.company.id = :companyId")
     void setNullByCompanyId(Long companyId);

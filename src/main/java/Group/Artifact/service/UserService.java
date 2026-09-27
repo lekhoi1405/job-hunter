@@ -90,17 +90,20 @@ public class UserService {
     
     @Transactional
     public void handleDeleteUser(long id){
-        this.refreshTokenService.handleDeleteByUserId(id);
-        this.userRepository.deleteById(id);
+        User user = this.userRepository.findById(id).orElseThrow(IdInvalidException::new);
+        this.refreshTokenService.handleDeleteByUserId(user.getId());
+        this.userRepository.deleteById(user.getId());
     }
 
     @Transactional
     public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
         User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
-        this.userMapper.update(userUpdateRequest, current);
-        if(!current.getCompany().getId().equals(userUpdateRequest.companyId())){
-            current.setCompany(this.companyService.handleGetCompanyProxyById(userUpdateRequest.companyId()));
+
+        if(current.getCompany()!=null && !current.getCompany().getId().equals(userUpdateRequest.companyId())){
+            Company company = this.companyService.handleGetCompanyById(userUpdateRequest.companyId());
+            current.setCompany(company);
         }
+        
         return this.userMapper.toUpdateResponse(current);
     }
 
