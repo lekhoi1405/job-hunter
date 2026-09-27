@@ -7,4 +7,8 @@ public interface SkillDTO {
     record CreateRequest(
         String name
     ){}
+    record UpdateRequest(
+        Long id,
+        String name
+    ){}
 }

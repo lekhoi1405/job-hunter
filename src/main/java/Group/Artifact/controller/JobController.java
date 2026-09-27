@@ -24,13 +24,13 @@ public class JobController {
 
     private final JobService jobService;
 
-    @ApiMessage("Create Job With Skill")
+    @ApiMessage("Create Job")
     @PostMapping
     public ResponseEntity<JobDTO.Response> createJob(@RequestBody JobDTO.CreateRequest createRequest){
         return ResponseEntity.ok().body(this.jobService.handleCreateJob(createRequest));
     }
 
-    @ApiMessage("Create Job With Skill")
+    @ApiMessage("Update Job")
     @PutMapping 
     public ResponseEntity<JobDTO.Response> UpdateJob(@RequestBody JobDTO.UpdateRequest updateRequest){
         return ResponseEntity.ok().body(this.jobService.handleUpdateJob(updateRequest));
@@ -48,7 +48,7 @@ public class JobController {
     }
 
     @ApiMessage("Delete Job")
-    @DeleteMapping
+    @DeleteMapping("/{jobId}")
     public ResponseEntity<Void> deleteJob(@RequestParam Long jobId){
         this.jobService.handleDeleteJob(jobId);
         return ResponseEntity.ok().body(null);

@@ -21,6 +21,7 @@ import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.ResultPagination.Meta;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.UserMapper;
+import Group.Artifact.util.error.AlreadyExistsException;
 import Group.Artifact.util.error.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class UserService {
 
 
     public UserDTO.CreateResponse handleCreateUser(UserDTO.CreateRequest createRequest){
-        if(this.userRepository.existsByEmail(createRequest.email()))throw new IdInvalidException("email existed");
+        if(this.userRepository.existsByEmail(createRequest.email()))throw new AlreadyExistsException("email existed");
         User user = userMapper.toEntity(createRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(createRequest.companyId()!=null){

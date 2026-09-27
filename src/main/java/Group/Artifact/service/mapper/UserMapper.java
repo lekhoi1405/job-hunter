@@ -18,7 +18,6 @@ public interface UserMapper {
     @Mapping(target = "companyId", source = "company.id")
     UserDTO.CreateResponse toCreateResponse(User user);
 
-    // @Mapping(target = "company", ignore = true)
     void update(UserDTO.UpdateRequest updateRequest,  @MappingTarget User user);
 
     @Mapping(target = "companyId", source = "company.id")
