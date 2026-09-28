@@ -17,7 +17,7 @@ public interface JobRepository extends JpaRepository<Job,Long>, JpaSpecification
     Page<Job> findAll(Specification<Job> specification, Pageable pageable);
     
     @Query("SELECT j FROM Job j LEFT JOIN FETCH j.jobSkills WHERE j.id = :jobId")
-    Optional<Job> findJobWithJobSKillById(@Param("jobId")Long jobId);
+    Optional<Job> findJobWithJobSKillById(Long jobId);
 
     @Modifying 
     @Query("DELETE FROM Job j WHERE j.company.id = :companyId")

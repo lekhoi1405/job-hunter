@@ -19,6 +19,7 @@ import Group.Artifact.domain.dto.UserDTO;
 import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.service.UserService;
 import Group.Artifact.util.annotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -30,7 +31,7 @@ public class UserController {
    
     @ApiMessage("Create User")
     @PostMapping
-    public ResponseEntity<UserDTO.CreateResponse> createUser(@RequestBody UserDTO.CreateRequest userCreateRequest){
+    public ResponseEntity<UserDTO.CreateResponse> createUser(@RequestBody @Valid UserDTO.CreateRequest userCreateRequest){
         return ResponseEntity.ok(this.userService.handleCreateUser(userCreateRequest));
     }
 
@@ -58,7 +59,7 @@ public class UserController {
 
     @ApiMessage("Update user")
     @PutMapping
-    public ResponseEntity<UserDTO.UpdateResponse> updateUser(@RequestBody UserDTO.UpdateRequest userUpdateRequest) {
+    public ResponseEntity<UserDTO.UpdateResponse> updateUser(@RequestBody @Valid UserDTO.UpdateRequest userUpdateRequest) {
         return ResponseEntity.ok(this.userService.handleUpdateUser(userUpdateRequest));
     }
 }

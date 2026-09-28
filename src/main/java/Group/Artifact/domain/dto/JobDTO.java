@@ -2,8 +2,12 @@ package Group.Artifact.domain.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import Group.Artifact.util.constant.LevelEnum;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public interface JobDTO {
     record Response(
@@ -19,27 +23,47 @@ public interface JobDTO {
     ){}
 
     record CreateRequest(
+        @NotBlank 
         String name,
         String location,
+
+        @Positive 
         Integer quantity,
+
+        @NotNull 
         LevelEnum level,
         String description,
+
+        @NotNull 
         LocalDate startDay,
+
+        @NotNull 
         LocalDate endDay,
-        List<Long>skillIds,
+        Set<Long>skillIds,
         Long companyId
     ){}
 
     record UpdateRequest(
+        @NotNull 
         Long id,
+        
+        @NotBlank 
         String name,
         String location,
+
+        @Positive 
         Integer quantity,
+
+        @NotNull 
         LevelEnum level,
         String description,
+        
+        @NotNull 
         LocalDate startDay,
+
+        @NotNull 
         LocalDate endDay,
-        List<Long>skillId,
+        Set<Long>skillIds,
         Long companyId
     ){}
 }

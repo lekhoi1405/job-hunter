@@ -13,7 +13,12 @@ public interface JobMapper {
 
     @Mapping(target =  "companyId", source = "company.id")
     JobDTO.Response toResponse(Job job);
+
+    @Mapping(target = "startDay", ignore = true)
+    @Mapping(target = "endDay", ignore = true)
     Job toEntity(JobDTO.CreateRequest createRequest);
     
+    @Mapping(target = "startDay", ignore = true)
+    @Mapping(target = "endDay", ignore = true)
     void update(JobDTO.UpdateRequest updateRequest, @MappingTarget Job job);
 } 
