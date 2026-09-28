@@ -99,10 +99,12 @@ public class UserService {
     public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
         User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
 
-        if(current.getCompany()!=null && !current.getCompany().getId().equals(userUpdateRequest.companyId())){
+        if(userUpdateRequest.companyId()!=null && !current.getCompany().getId().equals(userUpdateRequest.companyId())){
             Company company = this.companyService.handleGetCompanyById(userUpdateRequest.companyId());
             current.setCompany(company);
         }
+
+        this.userMapper.update(userUpdateRequest, current);
         
         return this.userMapper.toUpdateResponse(current);
     }
@@ -114,9 +116,4 @@ public class UserService {
     public User handleGetUserProxyById(Long id){
         return this.userRepository.getReferenceById(id);
     } 
-
-    public void handleDeleteRefreshToken(User user){
-        user.setRefreshTokens(null);
-        this.userRepository.save(user);
-    }
 }

@@ -78,6 +78,9 @@ public class SkillService {
     @Transactional 
     public SkillDTO.Response handleUpdateSkill(SkillDTO.UpdateRequest updateRequest){
         Skill skill = this.skillRepository.findById(updateRequest.id()).orElseThrow(IdInvalidException::new);
+        if(!updateRequest.name().equals(skill.getName()) && this.skillRepository.existsByName(updateRequest.name())){
+            throw new AlreadyExistsException("Skill name already exists");
+        }
         this.skillMapper.update(updateRequest, skill);
         return this.skillMapper.toResponse(skill);
     }

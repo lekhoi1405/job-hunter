@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import Group.Artifact.domain.dto.JobDTO;
 import Group.Artifact.service.JobService;
 import Group.Artifact.util.annotation.ApiMessage;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,13 +28,13 @@ public class JobController {
 
     @ApiMessage("Create Job")
     @PostMapping
-    public ResponseEntity<JobDTO.Response> createJob(@RequestBody JobDTO.CreateRequest createRequest){
+    public ResponseEntity<JobDTO.Response> createJob(@RequestBody @Valid JobDTO.CreateRequest createRequest){
         return ResponseEntity.ok().body(this.jobService.handleCreateJob(createRequest));
     }
 
     @ApiMessage("Update Job")
     @PutMapping 
-    public ResponseEntity<JobDTO.Response> UpdateJob(@RequestBody JobDTO.UpdateRequest updateRequest){
+    public ResponseEntity<JobDTO.Response> UpdateJob(@RequestBody @Valid JobDTO.UpdateRequest updateRequest){
         return ResponseEntity.ok().body(this.jobService.handleUpdateJob(updateRequest));
     }
     
@@ -49,7 +51,7 @@ public class JobController {
 
     @ApiMessage("Delete Job")
     @DeleteMapping("/{jobId}")
-    public ResponseEntity<Void> deleteJob(@RequestParam Long jobId){
+    public ResponseEntity<Void> deleteJob(@PathVariable Long jobId){
         this.jobService.handleDeleteJob(jobId);
         return ResponseEntity.ok().body(null);
     } 
