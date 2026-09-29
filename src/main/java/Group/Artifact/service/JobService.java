@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,8 @@ import Group.Artifact.repository.JobRepository;
 import Group.Artifact.repository.JobSkillRepository;
 import Group.Artifact.repository.SkillRepository;
 import Group.Artifact.service.mapper.JobMapper;
-import Group.Artifact.util.error.IdInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.DateTimeInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -47,7 +49,9 @@ public class JobService {
     public JobDTO.Response handleCreateJob(JobDTO.CreateRequest createRequest){
         Job job = this.jobMapper.toEntity(createRequest);
 
-        this.validateDates(job, createRequest.startDay(), createRequest.endDay());
+        this.validateDates(createRequest.startDay(), createRequest.endDay());
+        job.setStartDay(createRequest.startDay());
+        job.setEndDay(createRequest.endDay());
 
         if(createRequest.companyId()!=null){
             Company company = this.companyRepository.findById(createRequest.companyId()).orElseThrow(IdInvalidException::new);
@@ -62,7 +66,7 @@ public class JobService {
     }
 
     public void handleCreateJobSkill(Set<Long> skillId, Job job){
-         List<Skill> skills = this.validateSkills(skillId);
+        List<Skill> skills = this.validateSkills(skillId);
             List<JobSkill> jobSkills = new ArrayList<>();
             for(Skill skill : skills){
                 JobSkill jobSkill = JobSkill.builder()
@@ -76,26 +80,24 @@ public class JobService {
 
     public List<Skill> validateSkills(Set<Long> skillIds){
         List<Skill> skills = this.skillRepository.findAllById(skillIds);
+
         if (skills.size() != skillIds.size()) {
             Set<Long> missingSkills = new HashSet<>(skillIds);
             missingSkills.removeAll(skills.stream().map(s -> s.getId()).toList());
-            throw new RuntimeException(
-                "Skill ids not found " + missingSkills
-            );
+
+            throw new IdInvalidException("Skill ids not found " + missingSkills);
         }
 
         return skills;
     }
 
-    private void validateDates(Job job, LocalDate start, LocalDate end) {
+    private void validateDates(LocalDate start, LocalDate end) {
         if (start != null && end != null && start.isAfter(end)) {
 
-            throw new RuntimeException(
+            throw new DateTimeInvalidException(
                 "startDay must not be after endDay"
             );
         }
-        job.setStartDay(start);
-        job.setEndDay(end);
     }
 
     @Transactional 
@@ -103,16 +105,25 @@ public class JobService {
         Job job = this.jobRepository.findJobWithJobSKillById(updateRequest.id()).orElseThrow(() -> new IdInvalidException("Id can not be found!"));
         this.jobMapper.update(updateRequest, job);
 
-        this.validateDates(job, updateRequest.startDay(), updateRequest.endDay());
+        this.validateDates(updateRequest.startDay(), updateRequest.endDay());
         job.setStartDay(updateRequest.startDay());
         job.setEndDay(updateRequest.endDay());
 
-        if(updateRequest.companyId()!=null && !updateRequest.companyId().equals(job.getCompany().getId())){
-            Company company = this.companyRepository.findById(updateRequest.companyId()).orElseThrow(() -> new IdInvalidException("Id can not be found!"));
-            job.setCompany(company);
-        }
-        Set<Long> newSkillId = new HashSet<>(this.validateSkills(updateRequest.skillIds()).stream().map(s -> s.getId()).toList());
+        Long companyId = Optional.ofNullable(job.getCompany()).map(Company::getId).orElse(null);
 
+        if(updateRequest.companyId()!=null){
+            Company company = this.companyRepository.findById(updateRequest.companyId()).orElseThrow(() -> new IdInvalidException("Id can not be found!"));
+            if(companyId!=null){
+                if(!updateRequest.companyId().equals(companyId)){
+                    job.setCompany(company);
+                }
+            }
+            else{
+                job.setCompany(company);
+            }
+        }
+
+        Set<Long> newSkillId = new HashSet<>(this.validateSkills(updateRequest.skillIds()).stream().map(s -> s.getId()).toList());
         Set<Long> oldSkillId = new HashSet<>(job.getJobSkills().stream().map(js->js.getSkill().getId()).toList());
 
         Set<Long> skillToDelete = new HashSet<>(oldSkillId);
@@ -134,7 +145,6 @@ public class JobService {
         this.jobSkillRepository.saveAll(jobSkills);
 
         return this.jobMapper.toResponse(job);
-
     }
 
     public ResultPagination<List<JobDTO.Response>> handleGetAllJob(Integer current, Integer pageSize, String filterRequest){

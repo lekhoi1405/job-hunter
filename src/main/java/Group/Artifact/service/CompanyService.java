@@ -21,7 +21,7 @@ import Group.Artifact.repository.JobRepository;
 import Group.Artifact.repository.JobSkillRepository;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.CompanyMapper;
-import Group.Artifact.util.error.IdInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 

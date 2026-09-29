@@ -2,6 +2,7 @@ package Group.Artifact.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,10 +20,11 @@ import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.domain.dto.UserDTO;
 import Group.Artifact.domain.dto.response.ResultPagination;
 import Group.Artifact.domain.dto.response.ResultPagination.Meta;
+import Group.Artifact.repository.CompanyRepository;
 import Group.Artifact.repository.UserRepository;
 import Group.Artifact.service.mapper.UserMapper;
-import Group.Artifact.util.error.AlreadyExistsException;
-import Group.Artifact.util.error.IdInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.AlreadyExistsException;
+import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -34,7 +36,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final CompanyService companyService;
+    private final CompanyRepository companyRepository;
 
 
     public UserDTO.CreateResponse handleCreateUser(UserDTO.CreateRequest createRequest){
@@ -42,7 +44,7 @@ public class UserService {
         User user = userMapper.toEntity(createRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if(createRequest.companyId()!=null){
-            Company company = this.companyService.handleGetCompanyById(createRequest.companyId());
+            Company company = this.companyRepository.findById(createRequest.companyId()).orElseThrow(IdInvalidException::new);
             user.setCompany(company);
         }
         return this.userMapper.toCreateResponse(this.userRepository.save(user));
@@ -96,17 +98,26 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest userUpdateRequest){
-        User current = this.userRepository.findById(userUpdateRequest.id()).orElseThrow(IdInvalidException::new);
+    public UserDTO.UpdateResponse handleUpdateUser(UserDTO.UpdateRequest updateRequest){
+        User user = this.userRepository.findById(updateRequest.id()).orElseThrow(IdInvalidException::new);
 
-        if(userUpdateRequest.companyId()!=null && !current.getCompany().getId().equals(userUpdateRequest.companyId())){
-            Company company = this.companyService.handleGetCompanyById(userUpdateRequest.companyId());
-            current.setCompany(company);
+        Long companyId = Optional.ofNullable(user.getCompany()).map(Company::getId).orElse(null);
+
+        if(updateRequest.companyId()!=null){
+            Company company = this.companyRepository.findById(updateRequest.companyId()).orElseThrow(() -> new IdInvalidException("Id can not be found!"));
+            if(companyId!=null){
+                if(!updateRequest.companyId().equals(companyId)){
+                    user.setCompany(company);
+                }
+            }
+            else{
+                user.setCompany(company);
+            }
         }
 
-        this.userMapper.update(userUpdateRequest, current);
+        this.userMapper.update(updateRequest, user);
         
-        return this.userMapper.toUpdateResponse(current);
+        return this.userMapper.toUpdateResponse(user);
     }
 
     public User handleGetUserByUsername(String username){

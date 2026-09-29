@@ -19,8 +19,8 @@ import Group.Artifact.domain.specification.SearchCriteria;
 import Group.Artifact.repository.JobSkillRepository;
 import Group.Artifact.repository.SkillRepository;
 import Group.Artifact.service.mapper.SkillMapper;
-import Group.Artifact.util.error.AlreadyExistsException;
-import Group.Artifact.util.error.IdInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.AlreadyExistsException;
+import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
