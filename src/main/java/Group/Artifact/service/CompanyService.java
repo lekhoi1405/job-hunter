@@ -58,7 +58,6 @@ public class CompanyService {
             }
         }
         Page<Company> companyPage = this.companyRepository.findAll(specification, pageable);
-        companyPage.getContent().stream().map(c -> c.getJobs().stream().map(j -> j.getName()).toList()).toList();
         Meta meta = Meta.builder()
                         .current(companyPage.getNumber()+1)
                         .pageSize(companyPage.getSize())
@@ -89,10 +88,6 @@ public class CompanyService {
     public CompanyDTO.Response handleGetCompanyDTOById(Long id){
         return this.companyMapper.toResponse(this.companyRepository.findById(id)
                                                 .orElseThrow(IdInvalidException::new));
-    }
-
-    public Company handleGetCompanyProxyById(Long id){
-        return companyRepository.getReferenceById(id);
     }
 
     public Company handleGetCompanyById(Long id){

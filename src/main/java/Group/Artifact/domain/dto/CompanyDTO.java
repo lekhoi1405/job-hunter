@@ -35,8 +35,9 @@ public interface CompanyDTO {
         @NotBlank 
         String name,
 
-        @NotBlank 
         String description,
+
+        @NotBlank 
         String address,
         String logo) {
     }
