@@ -5,6 +5,7 @@ import java.time.Instant;
 import Group.Artifact.util.constant.GenderEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public interface UserDTO {
@@ -52,6 +53,7 @@ public interface UserDTO {
         }
 
     record UpdateRequest(
+        @NotNull 
         Long id,
         String name,
         String address,

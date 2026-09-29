@@ -1,4 +1,4 @@
-package Group.Artifact.util.error;
+package Group.Artifact.util.error.ExceptionCustom;
 
 public class IdInvalidException extends RuntimeException {
     public IdInvalidException(String message){

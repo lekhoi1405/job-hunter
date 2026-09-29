@@ -7,11 +7,11 @@ import jakarta.validation.constraints.NotNull;
 
 public interface CompanyDTO {
     record CreateRequest(
-        @NotBlank(message = "name can not be blank")
+        @NotBlank
         String name, 
         String description,
 
-        @NotBlank(message = "address can not be blank")
+        @NotBlank
         String address, 
         String logo){
     }
@@ -29,9 +29,13 @@ public interface CompanyDTO {
     }
 
     record UpdateRequest(    
-        @NotNull(message = "id can not be blank")
+        @NotNull
         Long id,
+
+        @NotBlank 
         String name,
+
+        @NotBlank 
         String description,
         String address,
         String logo) {

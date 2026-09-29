@@ -32,6 +32,8 @@ public interface JobDTO {
 
         @NotNull 
         LevelEnum level,
+
+        @NotBlank 
         String description,
 
         @NotNull 
@@ -49,6 +51,8 @@ public interface JobDTO {
         
         @NotBlank 
         String name,
+
+        @NotBlank 
         String location,
 
         @Positive 
@@ -56,6 +60,8 @@ public interface JobDTO {
 
         @NotNull 
         LevelEnum level,
+
+        @NotBlank 
         String description,
         
         @NotNull 
@@ -63,6 +69,8 @@ public interface JobDTO {
 
         @NotNull 
         LocalDate endDay,
+
+        @NotNull 
         Set<Long>skillIds,
         Long companyId
     ){}

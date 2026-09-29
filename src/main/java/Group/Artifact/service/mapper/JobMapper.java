@@ -20,5 +20,6 @@ public interface JobMapper {
     
     @Mapping(target = "startDay", ignore = true)
     @Mapping(target = "endDay", ignore = true)
+    @Mapping(target = "id", ignore = true)
     void update(JobDTO.UpdateRequest updateRequest, @MappingTarget Job job);
 } 

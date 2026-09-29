@@ -1,5 +1,6 @@
 package Group.Artifact.util.error;
 
+import java.time.DateTimeException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import Group.Artifact.domain.dto.response.RestResponse;
+import Group.Artifact.util.error.ExceptionCustom.DateTimeInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 
 @ControllerAdvice
 public class GlobalExceptionAdvice {
@@ -54,6 +57,15 @@ public class GlobalExceptionAdvice {
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(idInvalidException.getMessage());
         res.setMessage("Id invalid");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
+
+    @ExceptionHandler(value = DateTimeInvalidException.class)
+    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(DateTimeInvalidException dateTimeInvalidException){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(dateTimeInvalidException.getMessage());
+        res.setMessage("Date time invalid");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
