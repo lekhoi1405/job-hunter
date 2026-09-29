@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,6 +18,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import Group.Artifact.domain.dto.response.RestResponse;
+import Group.Artifact.util.error.ExceptionCustom.AlreadyExistsException;
 import Group.Artifact.util.error.ExceptionCustom.DateTimeInvalidException;
 import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
 
@@ -45,10 +47,10 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(value = BadCredentialsException.class ) 
     public ResponseEntity<RestResponse<Object>> handleBadCredentialsException(BadCredentialsException badCredentialsException){
         RestResponse<Object> res = new RestResponse<>();
-        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
         res.setError(badCredentialsException.getMessage());
         res.setMessage("Username or password incorrect!!");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(res);
     }
 
     @ExceptionHandler(value = IdInvalidException.class)
@@ -60,14 +62,33 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
+    @ExceptionHandler(value = AlreadyExistsException.class)
+    public ResponseEntity<RestResponse<Object>> handleAlreadyExistsException(AlreadyExistsException alreadyExistsException){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.CONFLICT.value());
+        res.setError(alreadyExistsException.getMessage());
+        res.setMessage("Conflict");
+        return ResponseEntity.status(HttpStatus.CONFLICT.value()).body(res);
+    }
+
     @ExceptionHandler(value = DateTimeInvalidException.class)
-    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(DateTimeInvalidException dateTimeInvalidException){
+    public ResponseEntity<RestResponse<Object>> handleDateTimeInvalidException(DateTimeInvalidException dateTimeInvalidException){
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(dateTimeInvalidException.getMessage());
         res.setMessage("Date time invalid");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity<RestResponse<Object>> handleDateTimeInvalidException(HttpMessageNotReadableException httpMessageNotReadableException){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(httpMessageNotReadableException.getMessage());
+        res.setMessage("Request body contains an invalid value");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
+
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> handelValidationError(MethodArgumentNotValidException exception){     
