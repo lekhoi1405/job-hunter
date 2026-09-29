@@ -6,7 +6,6 @@ import java.util.List;
 import org.hibernate.annotations.BatchSize;
 
 import Group.Artifact.domain.base.AuditBaseEntity;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;

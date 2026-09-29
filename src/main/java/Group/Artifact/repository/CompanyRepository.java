@@ -12,9 +12,5 @@ import org.springframework.data.jpa.repository.Query;
 import Group.Artifact.domain.entity.Company;
 public interface CompanyRepository extends JpaRepository<Company,Long>, JpaSpecificationExecutor<Company>{
     Page<Company> findAll(Specification<Company> specification, Pageable pageable);
-    void deleteById(int id);
-    
-    @Query("SELECT c FROM Company c LEFT JOIN FETCH c.jobs WHERE c.id = :companyId")
-    Optional<Company> findByIdWithJob(Long companyId);
 }
  
