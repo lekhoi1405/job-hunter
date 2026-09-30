@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -121,10 +122,10 @@ public class UserService {
     }
 
     public User handleGetUserByUsername(String username){
-        return this.userRepository.findByEmail(username).orElseThrow(()-> new BadCredentialsException("username not found"));
+        return this.userRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("username not found"));
     }
 
     public User handleGetUserProxyById(Long id){
         return this.userRepository.getReferenceById(id);
-    } 
+    }
 }

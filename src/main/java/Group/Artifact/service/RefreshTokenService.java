@@ -7,14 +7,13 @@ import org.springframework.stereotype.Service;
 import Group.Artifact.domain.entity.RefreshToken;
 import Group.Artifact.domain.entity.User;
 import Group.Artifact.repository.RefreshTokenRepository;
-import Group.Artifact.repository.UserRepository;
+import Group.Artifact.util.error.ExceptionCustom.RefreshTokenInvalidException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository; 
-    private final UserRepository userRepository;
 
     public RefreshToken createRefreshToken(String token, Instant now, Instant expiry){
         RefreshToken refreshToken = RefreshToken.builder()
@@ -28,7 +27,7 @@ public class RefreshTokenService {
 
     public RefreshToken handleGetRefreshTokenByTokenWithUser(String token){
         RefreshToken refreshToken = this.refreshTokenRepository.findByTokenWithUser(token).
-                                        orElseThrow(() -> new RuntimeException("this token is not existed"));
+                                        orElseThrow(RefreshTokenInvalidException::new);
         this.handleVerifyRefreshToken(refreshToken);
 
         return refreshToken;
@@ -36,15 +35,16 @@ public class RefreshTokenService {
 
     public RefreshToken handleGetRefreshTokenByToken(String token){
         RefreshToken refreshToken = this.refreshTokenRepository.findByToken(token).
-                                        orElseThrow(() -> new RuntimeException("this token is not existed"));
+                                        orElseThrow(RefreshTokenInvalidException::new);
         this.handleVerifyRefreshToken(refreshToken);
 
         return refreshToken;
     }
 
     public void handleVerifyRefreshToken(RefreshToken refreshToken){
-        if(refreshToken.isRevoked())throw new RuntimeException("refresh token is revoked");
-        if(refreshToken.getExpiryDate().isBefore(Instant.now()))throw new RuntimeException("refresh token is expired");
+        if(refreshToken.isRevoked() || refreshToken.getExpiryDate().isBefore(Instant.now())){
+            throw new RefreshTokenInvalidException();
+        }
     }
 
     public void handleAddUser(User userId, RefreshToken refreshToken){
@@ -52,8 +52,8 @@ public class RefreshTokenService {
         this.refreshTokenRepository.save(refreshToken);
     }
 
-    public void handleDeleteTokenByToken(RefreshToken refreshToken){
-        this.refreshTokenRepository.delete(refreshToken);
+    public void handleDeleteTokenByToken(String token){
+        this.refreshTokenRepository.deleteByToken(token);
     }
 
     public void handleDeleteByUserId(Long userId){

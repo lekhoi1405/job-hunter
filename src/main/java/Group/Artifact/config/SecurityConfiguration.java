@@ -55,16 +55,8 @@ public class SecurityConfiguration {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+        return NimbusJwtDecoder.withSecretKey(
             getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
-        return token-> {
-            try {
-                return jwtDecoder.decode(token);
-            } catch (Exception e) {
-                System.out.println(">>> JWT error: " + e.getMessage());
-                throw e;
-            }
-        };
     }
 
     @Bean
@@ -92,7 +84,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/","/auth/login", "/auth/refresh").permitAll()
                         .anyRequest().authenticated()   
             )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults())
+            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.
+                                                    jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                                )
                                                     .authenticationEntryPoint(customAuthenticationEntryPoint))
             // .exceptionHandling(
             //     exceptions-> exceptions

@@ -75,7 +75,7 @@ public class AuthService {
         RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByTokenWithUser(token);
         LoginDTO.Response response = this.handleCreateAccessToken(refreshToken.getUser());
         ResponseCookie responseCookie = this.handleCreateRefreshToken(refreshToken.getUser());
-        this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
+        this.refreshTokenService.handleDeleteTokenByToken(token);
 
         return new LoginDTO.Result(response, responseCookie);
     }
@@ -98,8 +98,7 @@ public class AuthService {
 
     @Transactional
     public ResponseCookie handleLogout(String token){
-        RefreshToken refreshToken = this.refreshTokenService.handleGetRefreshTokenByToken(token);
-        this.refreshTokenService.handleDeleteTokenByToken(refreshToken);
+        this.refreshTokenService.handleDeleteTokenByToken(token);
         return ResponseCookie.from("refresh_token", null)
                                                         .httpOnly(true)
                                                         .secure(true)

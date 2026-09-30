@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Lettuce.Cluster.Refresh;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +19,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import Group.Artifact.domain.dto.LoginDTO;
 import Group.Artifact.domain.dto.response.login.UserLogin;
 import Group.Artifact.domain.dto.response.login.UserLoginResponse;
 import Group.Artifact.domain.entity.RefreshToken;
