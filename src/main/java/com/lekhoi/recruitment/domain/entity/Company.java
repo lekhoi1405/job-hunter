@@ -1,0 +1,43 @@
+package com.lekhoi.recruitment.domain.entity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.BatchSize;
+
+import com.lekhoi.recruitment.domain.base.AuditBaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "companies")
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Company extends AuditBaseEntity{
+    private String name;
+
+    @Column(columnDefinition = "MEDIUMTEXT")
+    private String description; 
+
+    private String address;
+    private String logo;
+    
+    @Builder.Default
+    @OneToMany(mappedBy = "company")
+    private List<User> users = new ArrayList<>();
+    
+    @Builder.Default
+    @OneToMany(mappedBy = "company")
+    @BatchSize(size = 10)
+    private List<Job> jobs = new ArrayList<>();
+}

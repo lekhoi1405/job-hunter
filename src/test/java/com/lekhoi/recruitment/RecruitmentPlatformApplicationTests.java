@@ -1,0 +1,13 @@
+package com.lekhoi.recruitment;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class RecruitmentPlatformApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

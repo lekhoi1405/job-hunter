@@ -1,1 +1,1 @@
-rootProject.name = "Artifact"
+rootProject.name = "recruitment-platform-api"
