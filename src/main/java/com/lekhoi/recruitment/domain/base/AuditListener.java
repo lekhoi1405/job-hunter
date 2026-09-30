@@ -1,0 +1,31 @@
+package com.lekhoi.recruitment.domain.base;
+
+import java.time.Instant;
+
+import com.lekhoi.recruitment.util.SecurityUtil;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+
+public class AuditListener {
+    @PrePersist
+    public void onPrePersist(Object object){
+        if(object instanceof AuditBaseEntity auditBaseEntity){
+            Instant now = Instant.now();
+            auditBaseEntity.setCreatedAt(now);
+            auditBaseEntity.setUpdatedAt(now);
+            auditBaseEntity.setCreatedBy(SecurityUtil.getCurrentUserUsername()
+                                .orElse("admin"));
+            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUserUsername()
+                                .orElse("admin"));
+        }
+    }
+
+    @PreUpdate
+    public void onPreUpdated(Object object){
+        if(object instanceof AuditBaseEntity auditBaseEntity){
+            auditBaseEntity.setUpdatedAt(Instant.now());
+            auditBaseEntity.setUpdatedBy(SecurityUtil.getCurrentUserUsername()
+                                .orElse("admin"));
+        }
+    }
+}

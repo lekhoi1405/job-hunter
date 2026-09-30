@@ -1,0 +1,20 @@
+package com.lekhoi.recruitment.service.mapper;
+
+
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+import com.lekhoi.recruitment.domain.dto.CompanyDTO;
+import com.lekhoi.recruitment.domain.entity.Company;
+
+@Mapper(componentModel = "spring",nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface CompanyMapper {
+
+    Company toEntity(CompanyDTO.CreateRequest companyCreateRequest);
+    CompanyDTO.Response toResponse(Company company);
+
+    @Mapping(target = "id", ignore = true)
+    void update(CompanyDTO.UpdateRequest updateRequest, @MappingTarget Company company);
+} 
