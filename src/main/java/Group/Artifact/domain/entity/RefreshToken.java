@@ -27,13 +27,13 @@ public class RefreshToken extends BaseEntity{
     @Column(nullable = false)
     private Instant expiryDate;
 
-    @Column(length = 1000, unique = true)
+    @Column(length = 1000, unique = true, nullable = false)
     private String token;
 
     private boolean revoked;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 }

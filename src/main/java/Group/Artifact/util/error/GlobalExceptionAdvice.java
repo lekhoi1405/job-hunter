@@ -21,6 +21,7 @@ import Group.Artifact.domain.dto.response.RestResponse;
 import Group.Artifact.util.error.ExceptionCustom.AlreadyExistsException;
 import Group.Artifact.util.error.ExceptionCustom.DateTimeInvalidException;
 import Group.Artifact.util.error.ExceptionCustom.IdInvalidException;
+import Group.Artifact.util.error.ExceptionCustom.RefreshTokenInvalidException;
 
 @ControllerAdvice
 public class GlobalExceptionAdvice {
@@ -62,6 +63,15 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
     }
 
+    @ExceptionHandler(value = RefreshTokenInvalidException.class)
+    public ResponseEntity<RestResponse<Object>> handleIdRefreshTokenInvalidException(RefreshTokenInvalidException refreshTokenInvalidException){
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+        res.setError(refreshTokenInvalidException.getMessage());
+        res.setMessage("Id invalid");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(res);
+    }
+
     @ExceptionHandler(value = AlreadyExistsException.class)
     public ResponseEntity<RestResponse<Object>> handleAlreadyExistsException(AlreadyExistsException alreadyExistsException){
         RestResponse<Object> res = new RestResponse<>();
@@ -81,7 +91,7 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ResponseEntity<RestResponse<Object>> handleDateTimeInvalidException(HttpMessageNotReadableException httpMessageNotReadableException){
+    public ResponseEntity<RestResponse<Object>> handleDateHttpMessageNotReadableException(HttpMessageNotReadableException httpMessageNotReadableException){
         RestResponse<Object> res = new RestResponse<>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(httpMessageNotReadableException.getMessage());
